@@ -510,4 +510,58 @@ function acSearch(inputId,listId){const val=document.getElementById(inputId).val
 function acSelect(inputId,listId,code,city){document.getElementById(inputId).value=city+' ('+code+')';document.getElementById(inputId).dataset.code=code;document.getElementById(listId).classList.remove('show')}
 document.addEventListener('click',e=>{if(!e.target.closest('.ac-wrap'))document.querySelectorAll('.ac-list').forEach(l=>l.classList.remove('show'))});
 function buildTravel(){const tom=new Date();tom.setDate(tom.getDate()+7);const ret=new Date();ret.setDate(ret.getDate()+14);const dOut=document.getElementById('flyDateOut');const dRet=document.getElementById('flyDateRet');if(dOut)dOut.value=tom.toISOString().split('T')[0];if(dRet)dRet.value=ret.toISOString().split('T')[0];const f=document.getElementById('flyFrom');if(f){f.value='Milano Malpensa (MXP)';f.dataset.code='MXP'}}
-async function searchFlights(){const fromInput=document.getElementById('flyFrom');const toInput=document.getElementById('flyTo');const to=toInput?.value.trim();const dateOut=document.getElementById('flyDateOut')?.value;const dateRet=document.getElementById('flyDateRet')?.value;const resEl=document.getElementById('flightResults');if(!to){resEl.innerHTML='<div style="padding:20px;text-align:center;color:var(--tx3);font-size:11px">Inserisci una destinazione</div>';return}const fromCode=(fromInput?.dataset.code||'MXP').toUpperCase();const toCode=(toInput?.dataset.code||'').toUpperCase();const fromCity=(fromInput?.value||'').replace(/\s*\([A-Z]{3}\)/,'');const toCity=to.replace(/\s*\([A-Z]{3}\)/,'');const links=[{name:'Google Flights',url:'https://www.google.com/travel/flights?q=flights+from+'+encodeURIComponent(fromCity)+'+to+'+encodeURIComponent(toCity)+'+on+'+dateOut,color:'var(--cyan)'},{name:'Skyscanner',url:'https://www.skyscanner.it/trasporti/voli/'+fromCode.toLowerCase()+'/'+toCode.toLowerCase()+'/'+dateOut.replace(/-/g,'').substring(2)+'/',color:'#0770e3'},{name:'Kayak',url:'https://www.kayak.it/flights/'+fromCode+'-'+toCode+'/'+dateOut+(dateRet?'/'+dateRet:''),color:'#FF690F'},{name:'Ryanair',url:'https://www.ryanair.com/it/it/trip/flights/select?adults=1&dateOut='+dateOut+'&originIata='+fromCode+'&destinationIata='+toCode,color:'#073590'}];resEl.innerHTML=`<div style="padding:14px 0"><div style="font-size:13px;font-weight:600;margin-bottom:8px">${fromCity} → ${toCity}</div><div style="font-size:10px;color:var(--tx3);margin-bottom:12px">${new Date(dateOut).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})}${dateRet?' — '+new Date(dateRet).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'}):''}</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px">${links.map(l=>`<a href="${l.url}" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:12px;background:rgba(0,0,0,.3);border:1px solid var(--glass-border);border-radius:10px;color:${l.color};font-size:11px;font-weight:600;text-decoration:none;font-family:var(--font);transition:border-color .2s" onmouseover="this.style.borderColor='${l.color}'" onmouseout="this.style.borderColor='var(--glass-border)'">${l.name}</a>`).join('')}</div></div>`}
+async function searchFlights(){
+  const fromInput=document.getElementById('flyFrom');
+  const toInput=document.getElementById('flyTo');
+  const to=toInput?.value.trim();
+  const dateOut=document.getElementById('flyDateOut')?.value;
+  const dateRet=document.getElementById('flyDateRet')?.value;
+  const resEl=document.getElementById('flightResults');
+  if(!to){resEl.innerHTML='<div style="padding:20px;text-align:center;color:var(--tx3);font-size:11px">Inserisci una destinazione</div>';return}
+  const fromCode=(fromInput?.dataset.code||'MXP').toUpperCase();
+  const toCode=(toInput?.dataset.code||'').toUpperCase();
+  const fromCity=(fromInput?.value||'').replace(/\s*\([A-Z]{3}\)/,'');
+  const toCity=to.replace(/\s*\([A-Z]{3}\)/,'');
+  const dFmt=dateOut.replace(/-/g,'').substring(2);
+
+  const flights=[
+    {name:'Google Flights',icon:'✈️',url:'https://www.google.com/travel/flights?q=flights+from+'+encodeURIComponent(fromCity)+'+to+'+encodeURIComponent(toCity)+'+on+'+dateOut,color:'#4285f4'},
+    {name:'Skyscanner',icon:'🔍',url:'https://www.skyscanner.it/trasporti/voli/'+fromCode.toLowerCase()+'/'+toCode.toLowerCase()+'/'+dFmt+'/',color:'#0770e3'},
+    {name:'Kayak',icon:'🛩',url:'https://www.kayak.it/flights/'+fromCode+'-'+toCode+'/'+dateOut+(dateRet?'/'+dateRet:''),color:'#FF690F'},
+    {name:'Trip.com',icon:'🌐',url:'https://www.trip.com/flights/'+toCity.toLowerCase().replace(/\s+/g,'-')+'-flights.html?dcity='+fromCode+'&acity='+toCode+'&ddate='+dateOut+(dateRet?'&rdate='+dateRet:''),color:'#287DFA'},
+    {name:'Ryanair',icon:'✈️',url:'https://www.ryanair.com/it/it/trip/flights/select?adults=1&dateOut='+dateOut+(dateRet?'&dateIn='+dateRet:'')+'&originIata='+fromCode+'&destinationIata='+toCode,color:'#073590'},
+    {name:'easyJet',icon:'🟠',url:'https://www.easyjet.com/it/',color:'#FF6600'},
+    {name:'Wizz Air',icon:'🟣',url:'https://wizzair.com/it-it/flights/'+fromCode+'/'+toCode+(dateOut?'/'+dateOut:''),color:'#C6007E'},
+    {name:'eDreams',icon:'💺',url:'https://www.edreams.it/travel/#/results/type=R;dep='+dateOut+';from='+fromCode+';to='+toCode+(dateRet?';ret='+dateRet:''),color:'#1a73e8'},
+  ];
+
+  const hotels=[
+    {name:'Booking.com',icon:'🏨',url:'https://www.booking.com/searchresults.it.html?ss='+encodeURIComponent(toCity)+'&checkin='+dateOut+(dateRet?'&checkout='+dateRet:'')+'&group_adults=1&no_rooms=1&order=price',color:'#003580'},
+    {name:'Trivago',icon:'🔎',url:'https://www.trivago.it/?aDateRange%5Barr%5D='+dateOut+'&aDateRange%5Bdep%5D='+(dateRet||'')+'&aPriceRange%5Bfrom%5D=0&aPriceRange%5Bto%5D=0&iRoomType=7&aGeoCode%5Blat%5D=0&aGeoCode%5Blng%5D=0&aCategoryRange=0%2C1%2C2%2C3%2C4%2C5&iIncludeAll=0&sOrderBy=price',color:'#007faf'},
+    {name:'Hotels.com',icon:'🛏',url:'https://it.hotels.com/search.do?q-destination='+encodeURIComponent(toCity)+'&q-check-in='+dateOut+(dateRet?'&q-check-out='+dateRet:'')+'&sort-order=PRICE_LOW_TO_HIGH',color:'#d32f2f'},
+    {name:'Hostelworld',icon:'🎒',url:'https://www.hostelworld.com/find/'+encodeURIComponent(toCity)+'?from='+dateOut+(dateRet?'&to='+dateRet:'')+'&sort=price',color:'#f47920'},
+    {name:'Agoda',icon:'🌏',url:'https://www.agoda.com/it-it/search?city='+encodeURIComponent(toCity)+'&checkIn='+dateOut+(dateRet?'&checkOut='+dateRet:'')+'&sort=priceLowToHigh',color:'#5C2D91'},
+    {name:'Airbnb',icon:'🏠',url:'https://www.airbnb.it/s/'+encodeURIComponent(toCity)+'/homes?checkin='+dateOut+(dateRet?'&checkout='+dateRet:'')+'&price_filter_input_type=0&adults=1',color:'#FF5A5F'},
+    {name:'Trip.com Hotel',icon:'🏢',url:'https://www.trip.com/hotels/list?city='+encodeURIComponent(toCity)+'&checkin='+dateOut+(dateRet?'&checkout='+dateRet:''),color:'#287DFA'},
+    {name:'Expedia',icon:'🗺',url:'https://www.expedia.it/Hotel-Search?destination='+encodeURIComponent(toCity)+'&startDate='+dateOut+(dateRet?'&endDate='+dateRet:'')+'&sort=PRICE_LOW_TO_HIGH',color:'#00355f'},
+  ];
+
+  const linkBtn = (l) => `<a href="${l.url}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:12px;background:rgba(0,0,0,.3);border:1px solid var(--glass-border);border-radius:10px;color:${l.color};font-size:11px;font-weight:600;text-decoration:none;font-family:var(--font);transition:all .2s" onmouseover="this.style.borderColor='${l.color}';this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.borderColor='var(--glass-border)';this.style.background='rgba(0,0,0,.3)'">${l.icon} ${l.name}</a>`;
+
+  resEl.innerHTML=`<div style="padding:14px 0">
+    <div style="font-size:13px;font-weight:600;margin-bottom:4px">${fromCity} → ${toCity}</div>
+    <div style="font-size:10px;color:var(--tx3);margin-bottom:16px">${new Date(dateOut).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})}${dateRet?' — '+new Date(dateRet).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'}):' · Solo andata'}</div>
+
+    <div style="font-family:var(--display);font-size:8px;color:var(--accent);letter-spacing:2px;margin-bottom:8px">✈️ VOLI</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:20px">
+      ${flights.map(linkBtn).join('')}
+    </div>
+
+    <div style="font-family:var(--display);font-size:8px;color:var(--accent);letter-spacing:2px;margin-bottom:8px">🏨 HOTEL — ORDINA PER PREZZO</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:12px">
+      ${hotels.map(linkBtn).join('')}
+    </div>
+
+    <div style="font-size:9px;color:var(--tx3);text-align:center;margin-top:8px">I link aprono la ricerca con le tue date — confronta i prezzi su piu siti per trovare il migliore</div>
+  </div>`;
+}
