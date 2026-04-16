@@ -533,6 +533,7 @@ async function searchFlights(){
     {name:'easyJet',icon:'🟠',url:'https://www.easyjet.com/it/',color:'#FF6600'},
     {name:'Wizz Air',icon:'🟣',url:'https://wizzair.com/it-it/flights/'+fromCode+'/'+toCode+(dateOut?'/'+dateOut:''),color:'#C6007E'},
     {name:'eDreams',icon:'💺',url:'https://www.edreams.it/travel/#/results/type=R;dep='+dateOut+';from='+fromCode+';to='+toCode+(dateRet?';ret='+dateRet:''),color:'#1a73e8'},
+    {name:'Tryp',icon:'🧳',url:'https://www.tryp.com/it/voli/'+fromCode+'-'+toCode+'?departDate='+dateOut+(dateRet?'&returnDate='+dateRet:''),color:'#00c2a8'},
   ];
 
   const hotels=[
