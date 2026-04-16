@@ -373,92 +373,142 @@ function startRealTime() {
 
 // ═══ DIVIDENDS ═══
 async function fetchDividends() {
-    const FMP = 'https://financialmodelingprep.com/api/v3';
-    const KEY = FMP_KEY;
+    // Fetch dividends via Yahoo Finance (works, FMP legacy endpoint is dead)
+    const divStocks = [
+      {sym:'AAPL',name:'Apple',freq:'Trimestrale'},
+      {sym:'MSFT',name:'Microsoft',freq:'Trimestrale'},
+      {sym:'JPM',name:'JPMorgan',freq:'Trimestrale'},
+      {sym:'V',name:'Visa',freq:'Trimestrale'},
+      {sym:'ENI.MI',name:'Eni',freq:'Semestrale'},
+      {sym:'ENEL.MI',name:'Enel',freq:'Semestrale'},
+      {sym:'ISP.MI',name:'Intesa Sanpaolo',freq:'Semestrale'},
+      {sym:'RACE.MI',name:'Ferrari',freq:'Annuale'},
+      {sym:'KO',name:'Coca-Cola',freq:'Trimestrale'},
+      {sym:'JNJ',name:'Johnson & Johnson',freq:'Trimestrale'},
+      {sym:'PG',name:'Procter & Gamble',freq:'Trimestrale'},
+      {sym:'PEP',name:'PepsiCo',freq:'Trimestrale'},
+      {sym:'XOM',name:'ExxonMobil',freq:'Trimestrale'},
+      {sym:'MCD',name:'McDonald\'s',freq:'Trimestrale'},
+      {sym:'T',name:'AT&T',freq:'Trimestrale'},
+    ];
 
-    // Calendar dividends
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const future = new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0];
-        const r = await fetch(`${FMP}/stock_dividend_calendar?from=${today}&to=${future}&apikey=${KEY}`, { signal: AbortSignal.timeout(10000) });
-        if (r.ok) {
-            const data = await r.json();
-            const el = document.getElementById('divCalendar');
-            if (!data.length) { el.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px">Nessun dividendo nei prossimi 30 giorni</div>'; }
-            else {
-                el.innerHTML = '<div class="tw"><table><thead><tr><th style="text-align:left">Ticker</th><th style="text-align:left">Azienda</th><th>Dividendo</th><th>Yield</th><th>Ex-Date</th><th>Pagamento</th><th>Status</th></tr></thead><tbody>' +
-                data.slice(0, 50).map(d => {
-                    const exDate = new Date(d.date);
-                    const payDate = d.paymentDate ? new Date(d.paymentDate) : null;
-                    const isUpcoming = exDate > new Date();
-                    return `<tr>
-                        <td><span class="tk">${d.symbol}</span></td>
-                        <td class="nm2">${d.label || ''}</td>
-                        <td class="mono" style="color:var(--gn)">$${(d.dividend || 0).toFixed(2)}</td>
-                        <td class="mono">${d.adjDividend ? (d.adjDividend).toFixed(2) + '%' : '—'}</td>
-                        <td class="mono">${exDate.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })}</td>
-                        <td class="mono">${payDate ? payDate.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : '—'}</td>
-                        <td><span class="div-badge ${isUpcoming ? 'div-upcoming' : 'div-paid'}">${isUpcoming ? 'PROSSIMO' : 'EX-DIV'}</span></td>
-                    </tr>`;
-                }).join('') + '</tbody></table></div>';
-            }
-        }
-    } catch (e) { document.getElementById('divCalendar').innerHTML = '<div style="color:var(--tx3);text-align:center;padding:16px;font-size:11px">Errore caricamento</div>'; }
-
-    // Your stocks dividends
-    const myStocks = ['AAPL','MSFT','JPM','V','ENI.MI','ENEL.MI','ISP.MI'];
-    const upcoming = document.getElementById('divUpcoming');
-    let upHtml = '';
-    for (const sym of myStocks) {
+    // Use yhQuote with events=div to get dividend history
+    async function getYahooDividends(sym) {
+      const url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?interval=1d&range=1y&events=div';
+      for (let i = 0; i < PX.length; i++) {
+        const idx = (pxi + i) % PX.length;
         try {
-            const r = await fetch(`${FMP}/historical-price-full/stock_dividend/${sym}?apikey=${KEY}`, { signal: AbortSignal.timeout(8000) });
-            if (r.ok) {
-                const data = await r.json();
-                const hist = data.historical || [];
-                if (hist.length > 0) {
-                    const last = hist[0];
-                    const nextEstimate = new Date(last.date);
-                    nextEstimate.setFullYear(nextEstimate.getFullYear() + 1);
-                    upHtml += `<div class="div-card">
-                        <span class="div-ticker">${sym}</span>
-                        <span class="div-name">${last.label || ''}</span>
-                        <span class="div-yield" title="Ultimo dividendo">$${(last.dividend || 0).toFixed(2)}</span>
-                        <span class="div-date" title="Ultimo ex-date">${new Date(last.date).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' })}</span>
-                        <span class="div-badge div-exdiv" title="Frequenza">${last.frequency || 'Q'}</span>
-                    </div>`;
-                }
-            }
+          const res = await fetch(PX[idx](url), { signal: AbortSignal.timeout(8000) });
+          if (!res.ok) continue;
+          const data = await res.json();
+          const r = data?.chart?.result?.[0];
+          if (!r) continue;
+          pxi = idx;
+          const meta = r.meta || {};
+          const divs = r.events?.dividends || {};
+          const divList = Object.values(divs).sort((a, b) => b.date - a.date);
+          return { divs: divList, price: meta.regularMarketPrice || 0, currency: meta.currency || 'USD' };
         } catch (e) {}
+      }
+      return null;
     }
-    upcoming.innerHTML = upHtml || '<div style="color:var(--tx3);text-align:center;padding:16px;font-size:11px">Nessun dato disponibile</div>';
 
-    // Top yield
-    try {
-        const r = await fetch(`${FMP}/stock-screener?dividendMoreThan=3&limit=15&apikey=${KEY}`, { signal: AbortSignal.timeout(10000) });
-        if (r.ok) {
-            const data = await r.json();
-            document.getElementById('divTopYield').innerHTML = data.slice(0, 10).map(d =>
-                `<div class="div-card">
-                    <span class="div-ticker">${d.symbol}</span>
-                    <span class="div-name">${(d.companyName || '').substring(0, 25)}</span>
-                    <span class="div-yield">${(d.lastAnnualDividend || 0).toFixed(2)}%</span>
-                    <span class="div-date">$${(d.price || 0).toFixed(2)}</span>
-                    <span class="div-badge div-upcoming">TOP</span>
-                </div>`
-            ).join('') || '<div style="color:var(--tx3);text-align:center">—</div>';
-        }
-    } catch (e) {}
+    // === Calendar: all stocks dividends ===
+    const calEl = document.getElementById('divCalendar');
+    let calRows = [];
 
-    // Aristocrats (25+ years)
-    const aristocrats = ['JNJ','PG','KO','PEP','MMM','ABT','T','XOM','CVX','MCD','WMT','CL'];
-    let aristHtml = '';
-    for (const sym of aristocrats.slice(0, 8)) {
-        try {
-            const q = await fmpQuote(sym);
-            if (q) aristHtml += `<div class="div-card"><span class="div-ticker">${sym}</span><span class="div-name">25+ anni</span><span class="div-yield">$${q.p.toFixed(2)}</span><span class="div-date">${q.ch >= 0 ? '+' : ''}${q.ch.toFixed(2)}%</span><span class="div-badge div-paid">ARISTOCRAT</span></div>`;
-        } catch (e) {}
+    for (const stock of divStocks) {
+      try {
+        const data = await getYahooDividends(stock.sym);
+        if (!data || !data.divs.length) continue;
+        const last = data.divs[0];
+        const lastDate = new Date(last.date * 1000);
+        const amount = last.amount || 0;
+        const annualDiv = stock.freq === 'Trimestrale' ? amount * 4 : stock.freq === 'Semestrale' ? amount * 2 : amount;
+        const yieldPct = data.price > 0 ? (annualDiv / data.price * 100) : 0;
+
+        // Estimate next ex-date
+        const nextDate = new Date(lastDate);
+        if (stock.freq === 'Trimestrale') nextDate.setMonth(nextDate.getMonth() + 3);
+        else if (stock.freq === 'Semestrale') nextDate.setMonth(nextDate.getMonth() + 6);
+        else nextDate.setFullYear(nextDate.getFullYear() + 1);
+
+        const isEur = data.currency === 'EUR';
+        const eurAmount = isEur ? amount : toEur(amount, data.currency);
+        const eurPrice = isEur ? data.price : toEur(data.price, data.currency);
+
+        calRows.push({
+          sym: stock.sym, name: stock.name,
+          amount: eurAmount, yield: yieldPct,
+          lastDate, nextDate, freq: stock.freq,
+          price: eurPrice, isPast: nextDate < new Date()
+        });
+      } catch (e) {}
     }
-    document.getElementById('divAristocrats').innerHTML = aristHtml || '<div style="color:var(--tx3);text-align:center">—</div>';
+
+    // Sort by next date
+    calRows.sort((a, b) => a.nextDate - b.nextDate);
+
+    if (calRows.length) {
+      calEl.innerHTML = '<div class="tw"><table><thead><tr><th style="text-align:left">Ticker</th><th style="text-align:left">Azienda</th><th>Ultimo Div</th><th>Yield</th><th>Ultimo Ex-Date</th><th>Prox. Stima</th><th>Freq.</th><th>Status</th></tr></thead><tbody>' +
+        calRows.map(d => {
+          const upcoming = d.nextDate > new Date();
+          return `<tr>
+            <td><span class="tk">${d.sym}</span></td>
+            <td class="nm2">${d.name}</td>
+            <td class="mono" style="color:var(--gn)">${d.amount.toFixed(2)} EUR</td>
+            <td class="mono">${d.yield.toFixed(2)}%</td>
+            <td class="mono">${d.lastDate.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})}</td>
+            <td class="mono">${d.nextDate.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})}</td>
+            <td class="mono" style="font-size:9px;color:var(--tx2)">${d.freq}</td>
+            <td><span class="div-badge ${upcoming?'div-upcoming':'div-exdiv'}">${upcoming?'PROSSIMO':'PAGATO'}</span></td>
+          </tr>`;
+        }).join('') + '</tbody></table></div>';
+    } else {
+      calEl.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px;font-size:11px">Nessun dato dividendi disponibile</div>';
+    }
+
+    // === Your stocks: upcoming dividends ===
+    const upEl = document.getElementById('divUpcoming');
+    const myDivs = calRows.filter(d => ['AAPL','MSFT','JPM','V','ENI.MI','ENEL.MI','ISP.MI','RACE.MI'].includes(d.sym));
+    if (myDivs.length) {
+      upEl.innerHTML = myDivs.map(d =>
+        `<div class="div-card">
+          <span class="div-ticker">${d.sym}</span>
+          <span class="div-name">${d.name}</span>
+          <span class="div-yield">${d.amount.toFixed(2)} EUR</span>
+          <span class="div-date">${d.yield.toFixed(2)}%</span>
+          <span class="div-badge div-exdiv">${d.freq}</span>
+        </div>`
+      ).join('');
+    } else {
+      upEl.innerHTML = '<div style="color:var(--tx3);text-align:center;padding:16px;font-size:11px">Caricamento completato — nessun dividendo trovato</div>';
+    }
+
+    // === Top Yield ===
+    const topYield = [...calRows].sort((a, b) => b.yield - a.yield).slice(0, 10);
+    document.getElementById('divTopYield').innerHTML = topYield.length ? topYield.map(d =>
+      `<div class="div-card">
+        <span class="div-ticker">${d.sym}</span>
+        <span class="div-name">${d.name}</span>
+        <span class="div-yield">${d.yield.toFixed(2)}%</span>
+        <span class="div-date">${d.price.toFixed(2)} EUR</span>
+        <span class="div-badge div-upcoming">TOP</span>
+      </div>`
+    ).join('') : '<div style="color:var(--tx3);text-align:center;padding:12px">—</div>';
+
+    // === Aristocrats ===
+    const aristocratSyms = ['JNJ','PG','KO','PEP','XOM','MCD','T'];
+    const aristData = calRows.filter(d => aristocratSyms.includes(d.sym));
+    document.getElementById('divAristocrats').innerHTML = aristData.length ? aristData.map(d =>
+      `<div class="div-card">
+        <span class="div-ticker">${d.sym}</span>
+        <span class="div-name">${d.name} · 25+ anni</span>
+        <span class="div-yield">${d.yield.toFixed(2)}%</span>
+        <span class="div-date">${d.price.toFixed(2)} EUR</span>
+        <span class="div-badge div-paid">ARISTOCRAT</span>
+      </div>`
+    ).join('') : '<div style="color:var(--tx3);text-align:center;padding:12px">—</div>';
 }
 </script>
 </body>
