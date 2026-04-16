@@ -1,0 +1,172 @@
+{
+  "date": "2026-04-16",
+  "time": "12:19",
+  "total": 20,
+  "unread": 20,
+  "important": [
+    {
+      "from": "Google",
+      "subject": "Avviso di sicurezza"
+    },
+    {
+      "from": "Emma di Voyage Privé",
+      "subject": "🌊 Rodi fino a -49% | Sardegna tra mare e montagna, Parigi da 107€, Caraibi All Inclusive -70%"
+    },
+    {
+      "from": "HiveMQ Team",
+      "subject": "Ask Me Anything | Do you have questions about MQTT, UNS or IIoT?"
+    },
+    {
+      "from": "Converse",
+      "subject": "Le Chuck classiche elevano ogni look"
+    },
+    {
+      "from": "Pandora",
+      "subject": "📣 Anelli, anelli, anelli! 📣"
+    }
+  ],
+  "promo_count": 6,
+  "summary_voice": "Riepilogo email: 20 email nelle ultime 24 ore, di cui 20 non lette. 6 sono promozioni che puoi ignorare. Le 14 email importanti non lette sono:  da Google, oggetto: Avviso di sicurezza. da Emma di Voyage Privé, oggetto: 🌊 Rodi fino a -49% | Sardegna tra mare e montagna,. da HiveMQ Team, oggetto: Ask Me Anything | Do you have questions about MQTT. da Converse, oggetto: Le Chuck classiche elevano ogni look. da Pandora, oggetto: 📣 Anelli, anelli, anelli! 📣.",
+  "emails": [
+    {
+      "from": "Vans Promotions",
+      "subject": "Promo di metà stagione: fino al 30% di sconto",
+      "date": "Thu, 16 Apr 2026 00:49:48 -060",
+      "read": false,
+      "promo": true
+    },
+    {
+      "from": "noreply@statuspage.io",
+      "subject": "Claude Incident - Opus 4.6 elevated rate of errors - 16 April 2026",
+      "date": "Thu, 16 Apr 2026 06:57:45 +000",
+      "read": false,
+      "promo": true
+    },
+    {
+      "from": "Dressinn",
+      "subject": "Fai tendenza questa primavera con Tommy Jeans",
+      "date": "Thu, 16 Apr 2026 07:00:53 +000",
+      "read": false,
+      "promo": true
+    },
+    {
+      "from": "Marionnaud",
+      "subject": "Aprimi💌 il -33% ti sta aspettando!",
+      "date": "Thu, 16 Apr 2026 08:01:57 +010",
+      "read": false,
+      "promo": true
+    },
+    {
+      "from": "lavoro trabajo.org",
+      "subject": "Urgente: 10 offerte di Tirocinio come Ingegnere di Processo a\r\n Florence, Toscana in chiusura questa",
+      "date": "Thu, 16 Apr 2026 09:18:48 +020",
+      "read": false,
+      "promo": true
+    },
+    {
+      "from": "Google",
+      "subject": "Avviso di sicurezza",
+      "date": "Thu, 16 Apr 2026 07:28:16 GMT",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Emma di Voyage Privé",
+      "subject": "🌊 Rodi fino a -49% | Sardegna tra mare e montagna, Parigi da 107€, Caraibi All Inclusive -70%",
+      "date": "Thu, 16 Apr 2026 09:30:56 +020",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "noreply@statuspage.io",
+      "subject": "Claude Incident - Opus 4.6 elevated rate of errors - 16 April 2026",
+      "date": "Thu, 16 Apr 2026 07:50:21 +000",
+      "read": false,
+      "promo": true
+    },
+    {
+      "from": "HiveMQ Team",
+      "subject": "Ask Me Anything | Do you have questions about MQTT, UNS or IIoT?",
+      "date": "Thu, 16 Apr 2026 09:59:00 +020",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Converse",
+      "subject": "Le Chuck classiche elevano ogni look",
+      "date": "Thu, 16 Apr 2026 02:01:34 -060",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Pandora",
+      "subject": "📣 Anelli, anelli, anelli! 📣",
+      "date": "Thu, 16 Apr 2026 08:08:14 +000",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "MOBILFOX 10. BIRTHDAY",
+      "subject": "WIN THIS TESLA 🥳",
+      "date": "Thu, 16 Apr 2026 08:30:13 +000",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Nuki - The Smart Lock",
+      "subject": "Ultima occasione! ⏳ Risparmia il 20% su accessori selezionati e sull’Opener Set",
+      "date": "Thu, 16 Apr 2026 08:38:12 +000",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Blu&cluB",
+      "subject": "BLUVACANZE – Viaggia nel comfort con Turkish Airlines",
+      "date": "Thu, 16 Apr 2026 03:01:12 -060",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Foot Locker | FLX Membership",
+      "subject": "Due AJ1 Low. Un Vincitore.",
+      "date": "Thu, 16 Apr 2026 09:09:23 +000",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Unsplash Team",
+      "subject": "Confirm your Unsplash Account",
+      "date": "Thu, 16 Apr 2026 09:29:20 +000",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Instant Gaming",
+      "subject": "Pronti per un'avventura su un'isola? 🏝️ Tomodachi Life: Una vita da sogno è qui a €56,19",
+      "date": "Thu, 16 Apr 2026 09:32:00 +000",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Zara",
+      "subject": "ZARA SRPLS. COLLECTION 16. Drop 02",
+      "date": "Thu, 16 Apr 2026 09:12:05 +000",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Pampling",
+      "subject": "Mamma questa è x te! 🐶🐱",
+      "date": "Thu, 16 Apr 2026 10:00:34 +000",
+      "read": false,
+      "promo": false
+    },
+    {
+      "from": "Coursera",
+      "subject": "Ending soon: Save 40% off new courses and new opportunities",
+      "date": "Thu, 16 Apr 2026 10:09:09 +000",
+      "read": false,
+      "promo": false
+    }
+  ]
+}

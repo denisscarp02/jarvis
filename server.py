@@ -515,8 +515,7 @@ async def greeting():
     cpu = status["cpu"]
     ram = status["memory"]
 
-    # Fetch emails
-    emails = fetch_unread_emails(5)
+    # Email digest
 
     # Build greeting — Jarvis movie style: formal, precise, useful
     parts = []
@@ -544,25 +543,35 @@ async def greeting():
             f"Noto che sta ascoltando {status['music']['track']} di {status['music']['artist']}."
         )
 
-    # Emails — butler style
-    if emails:
-        n = len(emails)
-        important = [e for e in emails if not any(
-            kw in (e.get("from", "") + e.get("subject", "")).lower()
-            for kw in ["promo", "news@", "noreply", "newsletter", "marionnaud",
-                       "vans", "dressinn", "tradeinn", "statuspage", "trabajo"]
-        )]
-        if important:
-            parts.append(
-                f"Ha {n} email non lette. "
-                f"Tra quelle degne di nota: "
-                + ", ".join(f"{e['from']}" for e in important[:2])
-                + "."
-            )
+    # Emails — use daily digest file if available, otherwise live IMAP
+    digest_path = BASE_DIR / "daily_digest.json"
+    digest_used = False
+    if digest_path.exists():
+        try:
+            import datetime as _dt
+            digest = json.loads(digest_path.read_text())
+            if digest.get("date") == _dt.datetime.now().strftime("%Y-%m-%d") and digest.get("summary_voice"):
+                parts.append(digest["summary_voice"])
+                digest_used = True
+        except Exception:
+            pass
+
+    if not digest_used:
+        emails = fetch_unread_emails(5)
+        if emails:
+            n = len(emails)
+            important = [e for e in emails if not any(
+                kw in (e.get("from", "") + e.get("subject", "")).lower()
+                for kw in ["promo", "news@", "noreply", "newsletter", "marionnaud",
+                           "vans", "dressinn", "tradeinn", "statuspage", "trabajo"]
+            )]
+            if important:
+                parts.append(f"Ha {n} email non lette. Tra quelle degne di nota: "
+                    + ", ".join(f"{e['from']}" for e in important[:2]) + ".")
+            else:
+                parts.append(f"Ha {n} email non lette, nulla di urgente.")
         else:
-            parts.append(f"Ha {n} email non lette, nulla di urgente.")
-    else:
-        parts.append("Nessuna nuova email al momento.")
+            parts.append("Nessuna nuova email al momento.")
 
     # Market summary
     try:
@@ -588,7 +597,7 @@ async def greeting():
     text = " ".join(parts)
     audio_url = await generate_speech(text)
 
-    return {"text": text, "audio_url": audio_url, "emails": emails}
+    return {"text": text, "audio_url": audio_url}
 
 @app.get("/api/emails")
 async def get_emails():
