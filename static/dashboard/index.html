@@ -3,339 +3,459 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FinScope v10 — Dashboard Finanziaria</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4CA;</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<title>FinScope v10</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
 <link rel="stylesheet" href="/dashboard/style.css">
 </head>
 <body>
-
-<!-- Scanline effect -->
 <div class="scanline"></div>
 
-<!-- LOGIN — WebAuthn + Guest -->
+<!-- COOKIE BANNER -->
+<div id="cookieBanner" class="hidden">
+  <div class="cb-text">
+    <b>FinScope</b> utilizza cookie tecnici per il funzionamento del sito.
+    Accedendo come ospite, il tuo <b>nome</b> e <b>indirizzo IP</b> verranno registrati per motivi di sicurezza.
+  </div>
+  <button class="cb-reject" onclick="rejectCookies()">Rifiuta</button>
+  <button class="cb-accept" onclick="acceptCookies()">Accetta e Continua</button>
+</div>
+
+<!-- LOGIN -->
 <div id="LS">
 <div class="lb">
 <h1>FINSCOPE<b>10</b></h1>
 <p>DASHBOARD FINANZIARIA PRIVATA</p>
-
-<!-- Touch ID / Biometric -->
-<div id="authTouchID" style="display:none">
-<button class="auth-btn auth-btn-primary" onclick="doTouchIDLogin()" id="btnTouchID">
-&#x1F91A; Accedi con Touch ID
-</button>
+<div id="authTouchID" class="hidden">
+  <button class="auth-btn auth-btn-primary" onclick="doTouchIDLogin()">🤚 Accedi con Touch ID</button>
 </div>
-
-<!-- First time setup -->
-<div id="authSetup" style="display:none">
-<button class="auth-btn auth-btn-primary" onclick="doTouchIDRegister()">
-&#x1F91A; Configura Touch ID
-</button>
-<p style="font-size:9px;color:var(--mt);margin-top:8px">Prima configurazione — registra il tuo Touch ID</p>
+<div id="authSetup" class="hidden">
+  <button class="auth-btn auth-btn-primary" onclick="doTouchIDRegister()">🤚 Configura Touch ID</button>
+  <p style="font-size:9px;color:var(--tx3);margin-top:8px">Prima configurazione</p>
 </div>
-
 <div class="auth-divider">OPPURE</div>
-
-<!-- Guest access -->
-<input type="text" id="guestName" placeholder="Nome ospite" maxlength="50">
-<button class="auth-btn auth-btn-secondary" onclick="doGuestLogin()">
-Accedi come ospite
-</button>
-
+<input type="text" id="guestName" placeholder="Il tuo nome (ospite)" maxlength="50" onkeydown="if(event.key==='Enter')doGuestLogin()">
+<button class="auth-btn auth-btn-secondary" onclick="doGuestLogin()">Accedi come ospite</button>
 <div id="LE"></div>
-<p style="color:#3a4560;font-size:9px;margin-top:16px">Powered by J.A.R.V.I.S.</p>
+<p style="color:var(--tx3);font-size:8px;margin-top:18px;letter-spacing:1px">POWERED BY J.A.R.V.I.S.</p>
 </div>
 </div>
 
-<!-- APP (same structure as original) -->
-<div id="APP" style="display:none">
+<!-- APP -->
+<div id="APP">
 
-<!-- TICKER TAPE -->
-<div class="ticker-wrap" id="tickerTape"></div>
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-brand"><span>FINSCOPE</span><b>10</b></div>
 
-<!-- TOP BAR -->
-<div class="topbar">
-<div class="brand">FINSCOPE<b>10</b></div>
-<div class="tabs" id="tabs">
-<button class="tab on" onclick="go('overview',this)">Overview</button>
-<button class="tab" onclick="go('stocks',this)">Azioni</button>
-<button class="tab" onclick="go('etfs',this)">ETF</button>
-<button class="tab" onclick="go('bonds',this)">Obbligazioni</button>
-<button class="tab" onclick="go('commodities',this)">Materie Prime</button>
-<button class="tab" onclick="go('crypto',this)">Crypto</button>
-<button class="tab" onclick="go('currencies',this)">Valute</button>
-<button class="tab" onclick="go('screener',this)">Screener</button>
-<button class="tab" onclick="go('news',this)">News</button>
-<button class="tab" onclick="go('calendar',this)">Calendario</button>
-<button class="tab" onclick="go('apple',this)">Apple</button>
-<button class="tab" onclick="go('viaggi',this)">Viaggi</button>
-</div>
-<div class="clock mono" id="CK"></div>
-</div>
+  <div class="sidebar-section">Mercati</div>
+  <div class="nav-item active" onclick="go('overview',this)"><span class="nav-icon">📊</span><span class="nav-text">Overview</span></div>
+  <div class="nav-item" onclick="go('stocks',this)"><span class="nav-icon">📈</span><span class="nav-text">Azioni</span></div>
+  <div class="nav-item" onclick="go('etfs',this)"><span class="nav-icon">🏦</span><span class="nav-text">ETF</span></div>
+  <div class="nav-item" onclick="go('bonds',this)"><span class="nav-icon">📋</span><span class="nav-text">Obbligazioni</span></div>
+  <div class="nav-item" onclick="go('commodities',this)"><span class="nav-icon">🛢</span><span class="nav-text">Materie Prime</span></div>
+  <div class="nav-item" onclick="go('crypto',this)"><span class="nav-icon">₿</span><span class="nav-text">Crypto</span></div>
+  <div class="nav-item" onclick="go('currencies',this)"><span class="nav-icon">💱</span><span class="nav-text">Valute</span></div>
 
-<!-- MAIN — identical structure to original -->
-<div class="main">
+  <div class="sidebar-section">Strumenti</div>
+  <div class="nav-item" onclick="go('dividends',this)"><span class="nav-icon">💰</span><span class="nav-text">Dividendi</span></div>
+  <div class="nav-item" onclick="go('screener',this)"><span class="nav-icon">🔍</span><span class="nav-text">Screener</span></div>
+  <div class="nav-item" onclick="go('news',this)"><span class="nav-icon">📰</span><span class="nav-text">News</span></div>
+  <div class="nav-item" onclick="go('calendar',this)"><span class="nav-icon">📅</span><span class="nav-text">Calendario</span></div>
 
-<!-- Guest log panel (owner only, injected at top) -->
-<div id="guestLogPanel" style="display:none">
-<div class="card" style="border-color:rgba(239,68,68,.2)">
-<div class="card-title" style="color:var(--rd);display:flex;justify-content:space-between;align-items:center">
-&#x1F6E1; Accessi Ospiti
-<button onclick="document.getElementById('guestLogPanel').style.display='none'" style="background:none;border:none;color:var(--mt);cursor:pointer;font-size:14px">&#x2715;</button>
-</div>
-<div id="guestLogEntries" style="max-height:200px;overflow-y:auto"></div>
-</div>
+  <div class="sidebar-section">Altro</div>
+  <div class="nav-item" onclick="go('apple',this)"><span class="nav-icon">🍎</span><span class="nav-text">Apple</span></div>
+  <div class="nav-item" onclick="go('viaggi',this)"><span class="nav-icon">✈️</span><span class="nav-text">Viaggi</span></div>
+  <div class="nav-item" onclick="go('visitors',this)" id="navVisitors"><span class="nav-icon">🛡</span><span class="nav-text">Visitatori</span><span class="nav-badge hidden" id="visitorBadge">0</span></div>
+
+  <div class="sidebar-clock">
+    <div id="sidebarTime">--:--</div>
+    <div class="date" id="sidebarDate">--</div>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- REAL-TIME TICKER BAR (always visible) -->
+<div class="rt-bar" id="rtBar">
+  <div class="rt-item"><div class="rt-name"><span class="rt-dot live"></span>S&P 500</div><div class="rt-price" id="rt-spy">---</div><div class="rt-change" id="rt-spy-ch">---</div></div>
+  <div class="rt-item"><div class="rt-name"><span class="rt-dot live"></span>NASDAQ</div><div class="rt-price" id="rt-qqq">---</div><div class="rt-change" id="rt-qqq-ch">---</div></div>
+  <div class="rt-item"><div class="rt-name"><span class="rt-dot live"></span>FTSE MIB</div><div class="rt-price" id="rt-ftsemib">---</div><div class="rt-change" id="rt-ftsemib-ch">---</div></div>
+  <div class="rt-item"><div class="rt-name"><span class="rt-dot live"></span>BITCOIN</div><div class="rt-price" id="rt-btc">---</div><div class="rt-change" id="rt-btc-ch">---</div></div>
+  <div class="rt-item"><div class="rt-name"><span class="rt-dot live"></span>ORO</div><div class="rt-price" id="rt-gold">---</div><div class="rt-change" id="rt-gold-ch">---</div></div>
+  <div class="rt-item"><div class="rt-name"><span class="rt-dot live"></span>EUR/USD</div><div class="rt-price" id="rt-eurusd">---</div><div class="rt-change" id="rt-eurusd-ch">---</div></div>
 </div>
 
 <!-- OVERVIEW -->
 <div class="sec ac" id="sec-overview">
-<div class="g2">
-<div class="card"><div class="card-title">Mercato USA</div><div class="tv-widget tv-md" id="tv-mkt-us"></div></div>
-<div class="card"><div class="card-title">Mercato Europa</div><div class="tv-widget tv-md" id="tv-mkt-eu"></div></div>
-</div>
-<div class="g3">
-<div class="card">
-<div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Crypto <input id="ov-sym-crypto" value="BITSTAMP:BTCUSD" onkeydown="if(event.key==='Enter')saveOvSym('crypto')" style="padding:3px 8px;border-radius:5px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--ac);font-size:9px;font-family:'JetBrains Mono',monospace;outline:none;width:130px;text-align:right"></div>
-<div class="tv-widget tv-md" id="tv-mkt-crypto"></div>
-</div>
-<div class="card">
-<div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Materie Prime <input id="ov-sym-comm" value="TVC:GOLD" onkeydown="if(event.key==='Enter')saveOvSym('comm')" style="padding:3px 8px;border-radius:5px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--ac);font-size:9px;font-family:'JetBrains Mono',monospace;outline:none;width:130px;text-align:right"></div>
-<div class="tv-widget tv-md" id="tv-mkt-comm"></div>
-</div>
-<div class="card">
-<div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Forex <input id="ov-sym-fx" value="FX:EURUSD" onkeydown="if(event.key==='Enter')saveOvSym('fx')" style="padding:3px 8px;border-radius:5px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--ac);font-size:9px;font-family:'JetBrains Mono',monospace;outline:none;width:130px;text-align:right"></div>
-<div class="tv-widget tv-md" id="tv-mkt-fx"></div>
-</div>
-</div>
+  <div class="g2">
+    <div class="card"><div class="card-title">Mercato USA</div><div class="tv-widget tv-md" id="tv-mkt-us"></div></div>
+    <div class="card"><div class="card-title">Mercato Europa</div><div class="tv-widget tv-md" id="tv-mkt-eu"></div></div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="card-title">Crypto</div><div class="tv-widget tv-md" id="tv-mkt-crypto"></div></div>
+    <div class="card"><div class="card-title">Materie Prime</div><div class="tv-widget tv-md" id="tv-mkt-comm"></div></div>
+    <div class="card"><div class="card-title">Forex</div><div class="tv-widget tv-md" id="tv-mkt-fx"></div></div>
+  </div>
 </div>
 
-<!-- All other sections: stocks, etfs, bonds, commodities, crypto, currencies, screener, news, calendar, apple, viaggi -->
-<!-- These are IDENTICAL to the original — keeping all functionality -->
+<!-- STOCKS -->
 <div class="sec" id="sec-stocks">
-<div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-stocks"></div></div>
-<div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Azioni <div style="display:flex;gap:3px;align-items:center"><input class="tbl-search" id="search-stocks" placeholder="&#x1F50D; Cerca..." oninput="filterTable('stocks')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:inherit;outline:none;width:140px"><div class="srt" id="srt-stocks"></div><button class="add-btn" onclick="openAdd('stocks')">+</button></div></div><div id="tbl-stocks"></div></div>
+  <div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-stocks"></div></div>
+  <div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Azioni <div style="display:flex;gap:4px;align-items:center"><input id="search-stocks" placeholder="Cerca..." oninput="filterTable('stocks')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:var(--font);outline:none;width:130px"><div class="srt" id="srt-stocks"></div><button class="add-btn" onclick="openAdd('stocks')">+</button></div></div><div id="tbl-stocks"></div></div>
 </div>
 
+<!-- ETFs -->
 <div class="sec" id="sec-etfs">
-<div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-etfs"></div></div>
-<div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">ETF <div style="display:flex;gap:3px;align-items:center"><input class="tbl-search" id="search-etfs" placeholder="&#x1F50D; Cerca..." oninput="filterTable('etfs')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:inherit;outline:none;width:140px"><div class="srt" id="srt-etfs"></div><button class="add-btn" onclick="openAdd('etfs')">+</button></div></div><div id="tbl-etfs"></div></div>
+  <div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-etfs"></div></div>
+  <div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">ETF <div style="display:flex;gap:4px;align-items:center"><input id="search-etfs" placeholder="Cerca..." oninput="filterTable('etfs')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:var(--font);outline:none;width:130px"><div class="srt" id="srt-etfs"></div><button class="add-btn" onclick="openAdd('etfs')">+</button></div></div><div id="tbl-etfs"></div></div>
 </div>
 
+<!-- BONDS -->
 <div class="sec" id="sec-bonds">
-<div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-bonds"></div></div>
-<div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Obbligazioni <div style="display:flex;gap:3px;align-items:center"><input class="tbl-search" id="search-bonds" placeholder="&#x1F50D; Cerca..." oninput="filterTable('bonds')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:inherit;outline:none;width:140px"><div class="srt" id="srt-bonds"></div><button class="add-btn" onclick="openAdd('bonds')">+</button></div></div><div id="tbl-bonds"></div></div>
+  <div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-bonds"></div></div>
+  <div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Obbligazioni <div style="display:flex;gap:4px;align-items:center"><input id="search-bonds" placeholder="Cerca..." oninput="filterTable('bonds')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:var(--font);outline:none;width:130px"><div class="srt" id="srt-bonds"></div><button class="add-btn" onclick="openAdd('bonds')">+</button></div></div><div id="tbl-bonds"></div></div>
 </div>
 
+<!-- COMMODITIES -->
 <div class="sec" id="sec-commodities">
-<div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Grafico <input id="comm-chart-sym" value="TVC:GOLD" onkeydown="if(event.key==='Enter')overrideCommChart()" style="padding:3px 8px;border-radius:5px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--ac);font-size:9px;font-family:'JetBrains Mono',monospace;outline:none;width:160px;text-align:right"></div><div class="tv-widget tv-xl" id="tv-chart-comm"></div></div>
-<div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Materie Prime <div style="display:flex;gap:3px;align-items:center"><input class="tbl-search" id="search-comm" placeholder="&#x1F50D; Cerca..." oninput="filterTable('comm')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:inherit;outline:none;width:140px"><div class="srt" id="srt-comm"></div><button class="add-btn" onclick="openAdd('comm')">+</button></div></div><div id="tbl-comm"></div></div>
+  <div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-comm"></div></div>
+  <div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Materie Prime <div style="display:flex;gap:4px;align-items:center"><input id="search-comm" placeholder="Cerca..." oninput="filterTable('comm')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:var(--font);outline:none;width:130px"><div class="srt" id="srt-comm"></div><button class="add-btn" onclick="openAdd('comm')">+</button></div></div><div id="tbl-comm"></div></div>
 </div>
 
+<!-- CRYPTO -->
 <div class="sec" id="sec-crypto">
-<div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-crypto"></div></div>
-<div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Criptovalute <div style="display:flex;gap:3px;align-items:center"><input class="tbl-search" id="search-crypto" placeholder="&#x1F50D; Cerca..." oninput="filterTable('crypto')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:inherit;outline:none;width:140px"><div class="srt" id="srt-crypto"></div><button class="add-btn" onclick="openAdd('crypto')">+</button></div></div><div id="tbl-crypto"></div></div>
+  <div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-crypto"></div></div>
+  <div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Criptovalute <div style="display:flex;gap:4px;align-items:center"><input id="search-crypto" placeholder="Cerca..." oninput="filterTable('crypto')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:var(--font);outline:none;width:130px"><div class="srt" id="srt-crypto"></div><button class="add-btn" onclick="openAdd('crypto')">+</button></div></div><div id="tbl-crypto"></div></div>
 </div>
 
+<!-- CURRENCIES -->
 <div class="sec" id="sec-currencies">
-<div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-fx"></div></div>
-<div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Valute <div style="display:flex;gap:3px;align-items:center"><input class="tbl-search" id="search-currencies" placeholder="&#x1F50D; Cerca..." oninput="filterTable('currencies')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:inherit;outline:none;width:140px"><div class="srt" id="srt-currencies"></div><button class="add-btn" onclick="openAdd('currencies')">+</button></div></div><div id="tbl-fx"></div></div>
+  <div class="card"><div class="card-title">Grafico</div><div class="tv-widget tv-xl" id="tv-chart-fx"></div></div>
+  <div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center">Valute <div style="display:flex;gap:4px;align-items:center"><input id="search-currencies" placeholder="Cerca..." oninput="filterTable('currencies')" style="padding:4px 10px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(0,0,0,.3);color:var(--tx);font-size:10px;font-family:var(--font);outline:none;width:130px"><div class="srt" id="srt-currencies"></div><button class="add-btn" onclick="openAdd('currencies')">+</button></div></div><div id="tbl-fx"></div></div>
 </div>
 
+<!-- DIVIDENDS -->
+<div class="sec" id="sec-dividends">
+  <div class="card">
+    <div class="card-title">📅 Calendario Dividendi</div>
+    <div id="divCalendar"><div class="ld"><div class="sp"></div> Caricamento dividendi...</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💰 Prossimi Dividendi — Le tue Azioni</div>
+    <div id="divUpcoming"><div class="ld"><div class="sp"></div></div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">📊 Top Dividend Yield</div>
+      <div id="divTopYield"><div class="ld"><div class="sp"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 Aristocratici del Dividendo</div>
+      <div id="divAristocrats"><div class="ld"><div class="sp"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREENER -->
 <div class="sec" id="sec-screener">
-<div class="card"><div class="card-title">Screener Azioni</div><div class="tv-widget tv-xl" id="tv-screener"></div></div>
+  <div class="card"><div class="card-title">Screener Azioni</div><div class="tv-widget tv-xl" id="tv-screener"></div></div>
 </div>
 
+<!-- NEWS -->
 <div class="sec" id="sec-news">
-<div class="g2">
-<div class="card"><div class="card-title">Notizie Generali</div><div class="tv-widget tv-xl" id="tv-news"></div></div>
-<div class="card"><div class="card-title">Notizie Crypto</div><div class="tv-widget tv-xl" id="tv-news-crypto"></div></div>
-</div>
+  <div class="g2">
+    <div class="card"><div class="card-title">Notizie Generali</div><div class="tv-widget tv-xl" id="tv-news"></div></div>
+    <div class="card"><div class="card-title">Notizie Crypto</div><div class="tv-widget tv-xl" id="tv-news-crypto"></div></div>
+  </div>
 </div>
 
+<!-- CALENDAR -->
 <div class="sec" id="sec-calendar">
-<div class="card"><div class="card-title">Calendario Economico</div><div class="tv-widget tv-xl" id="tv-calendar"></div></div>
+  <div class="card"><div class="card-title">Calendario Economico</div><div class="tv-widget tv-xl" id="tv-calendar"></div></div>
 </div>
 
+<!-- APPLE -->
 <div class="sec" id="sec-apple">
-<div class="card"><div class="card-title">AAPL — Apple Inc.</div><div class="tv-widget tv-xl" id="tv-chart-apple"></div></div>
-<div class="card" id="appleTracker">
-<div class="card-title">Apple Upgrade Tracker</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" id="appleDropdowns">
-<div>
-<label style="font-size:9px;color:var(--mt);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Il mio attuale</label>
-<select id="appleMio" onchange="appleCompare()" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:12px;font-family:inherit;outline:none;cursor:pointer"><option value="">Seleziona...</option></select>
-</div>
-<div>
-<label style="font-size:9px;color:var(--mt);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Voglio passare a</label>
-<select id="appleTarget" onchange="appleCompare()" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:12px;font-family:inherit;outline:none;cursor:pointer"><option value="">Seleziona...</option></select>
-</div>
-</div>
-<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px" id="appleCatBtns"></div>
-<div id="appleResult" style="display:none"></div>
-</div>
+  <div class="card"><div class="card-title">AAPL</div><div class="tv-widget tv-xl" id="tv-chart-apple"></div></div>
+  <div class="card"><div class="card-title">Apple Upgrade Tracker</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div><label style="font-size:9px;color:var(--tx3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Il mio attuale</label><select id="appleMio" onchange="appleCompare()" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--glass-border);background:rgba(0,0,0,.4);color:var(--tx);font-size:12px;font-family:var(--font);outline:none"><option value="">Seleziona...</option></select></div>
+      <div><label style="font-size:9px;color:var(--tx3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Voglio passare a</label><select id="appleTarget" onchange="appleCompare()" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--glass-border);background:rgba(0,0,0,.4);color:var(--tx);font-size:12px;font-family:var(--font);outline:none"><option value="">Seleziona...</option></select></div>
+    </div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px" id="appleCatBtns"></div>
+    <div id="appleResult" style="display:none"></div>
+  </div>
 </div>
 
+<!-- VIAGGI -->
 <div class="sec" id="sec-viaggi">
-<div class="card">
-<div class="card-title">Ricerca Voli</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-<div class="ac-wrap">
-<label style="font-size:9px;color:var(--mt);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Aeroporto Partenza</label>
-<input id="flyFrom" placeholder="es. MXP" oninput="acSearch('flyFrom','acListFrom')" autocomplete="off" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:12px;font-family:inherit;outline:none">
-<div class="ac-list" id="acListFrom"></div>
-</div>
-<div class="ac-wrap">
-<label style="font-size:9px;color:var(--mt);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Aeroporto Arrivo</label>
-<input id="flyTo" placeholder="es. LHR" oninput="acSearch('flyTo','acListTo')" autocomplete="off" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:12px;font-family:inherit;outline:none">
-<div class="ac-list" id="acListTo"></div>
-</div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px">
-<div>
-<label style="font-size:9px;color:var(--mt);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Data Andata</label>
-<input id="flyDateOut" type="date" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:12px;font-family:inherit;outline:none;color-scheme:dark">
-</div>
-<div>
-<label style="font-size:9px;color:var(--mt);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Data Ritorno</label>
-<input id="flyDateRet" type="date" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:12px;font-family:inherit;outline:none;color-scheme:dark">
-</div>
-<div>
-<label style="font-size:9px;color:var(--mt);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Flessibilita</label>
-<select id="flyFlex" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:rgba(0,0,0,.3);color:var(--tx);font-size:12px;font-family:inherit;outline:none;cursor:pointer">
-<option value="exact">Date esatte</option><option value="flex3">+/- 3 giorni</option><option value="flex7">+/- 1 settimana</option>
-</select>
-</div>
-<button onclick="searchFlights()" style="padding:10px 20px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;height:40px;box-shadow:0 2px 10px rgba(0,212,255,.2)">Cerca</button>
-</div>
-<div id="bookingAdvice" style="margin-bottom:12px"></div>
-<div id="flightResults" style="min-height:100px"></div>
-</div>
+  <div class="card">
+    <div class="card-title">✈️ Ricerca Voli</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="ac-wrap"><label style="font-size:9px;color:var(--tx3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Partenza</label><input id="flyFrom" placeholder="es. MXP" oninput="acSearch('flyFrom','acListFrom')" autocomplete="off" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--glass-border);background:rgba(0,0,0,.4);color:var(--tx);font-size:12px;font-family:var(--font);outline:none"><div class="ac-list" id="acListFrom"></div></div>
+      <div class="ac-wrap"><label style="font-size:9px;color:var(--tx3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Arrivo</label><input id="flyTo" placeholder="es. LHR" oninput="acSearch('flyTo','acListTo')" autocomplete="off" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--glass-border);background:rgba(0,0,0,.4);color:var(--tx);font-size:12px;font-family:var(--font);outline:none"><div class="ac-list" id="acListTo"></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px">
+      <div><label style="font-size:9px;color:var(--tx3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Andata</label><input id="flyDateOut" type="date" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--glass-border);background:rgba(0,0,0,.4);color:var(--tx);font-size:12px;font-family:var(--font);outline:none;color-scheme:dark"></div>
+      <div><label style="font-size:9px;color:var(--tx3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px">Ritorno</label><input id="flyDateRet" type="date" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--glass-border);background:rgba(0,0,0,.4);color:var(--tx);font-size:12px;font-family:var(--font);outline:none;color-scheme:dark"></div>
+      <button onclick="searchFlights()" style="padding:10px 24px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);height:42px;box-shadow:0 2px 12px rgba(0,180,220,.2)">Cerca</button>
+    </div>
+    <div id="flightResults" style="min-height:60px"></div>
+  </div>
 </div>
 
-</div><!-- /main -->
+<!-- VISITORS (owner only) -->
+<div class="sec" id="sec-visitors">
+  <div class="card visitor-card">
+    <div class="card-title">🛡 Log Accessi Visitatori</div>
+    <div id="visitorLogEntries"><div class="ld"><div class="sp"></div> Caricamento...</div></div>
+  </div>
+</div>
+
+</div><!-- /content -->
 </div><!-- /APP -->
 
-<!-- ADD MODAL (same as original but restyled via CSS) -->
+<!-- ADD MODAL -->
 <div class="modal-bg" id="addModal" onclick="if(event.target===this)closeAdd()">
 <div class="modal">
-<h3><span id="addTitle">Aggiungi Asset</span><button onclick="closeAdd()">&#x2715;</button></h3>
-<div style="margin-bottom:8px">
-<input id="addUrl" placeholder="URL Yahoo Finance, Google Finance, TradingView...">
-</div>
-<div style="margin-bottom:8px">
+<h3><span id="addTitle">Aggiungi Asset</span><button onclick="closeAdd()">✕</button></h3>
+<input id="addUrl" placeholder="URL Yahoo Finance, TradingView...">
 <input id="addIsin" placeholder="ISIN (es. US0378331005)">
-</div>
-<div style="display:grid;grid-template-columns:1fr 2fr;gap:6px;margin-bottom:8px">
-<input id="addManualSym" placeholder="Ticker (es. AAPL)">
-<input id="addManualName" placeholder="Nome (es. Apple Inc.)">
-</div>
-<button onclick="addFromUrl()" style="width:100%;padding:11px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">+ Aggiungi</button>
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:6px;margin-bottom:8px"><input id="addManualSym" placeholder="Ticker"><input id="addManualName" placeholder="Nome"></div>
+<button onclick="addFromUrl()" style="width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)">+ Aggiungi</button>
 <div id="addUrlResult" style="margin-top:8px;font-size:11px;text-align:center"></div>
 </div>
 </div>
 
-<!-- Auth JS -->
 <script src="/dashboard/auth.js"></script>
+<script src="/dashboard/app.js"></script>
 
 <script>
 // ═══ AUTH FLOW ═══
-let currentRole = null; // 'owner' | 'guest'
+let currentRole = null;
+let cookiesAccepted = localStorage.getItem('fs_cookies') === '1';
 
 async function initAuth() {
     const status = await getAuthStatus();
     const hasPlatform = await isPlatformAuthAvailable();
-
     if (hasPlatform) {
-        if (status.owner_registered) {
-            document.getElementById('authTouchID').style.display = 'block';
-        } else {
-            document.getElementById('authSetup').style.display = 'block';
-        }
+        if (status.owner_registered) document.getElementById('authTouchID').classList.remove('hidden');
+        else document.getElementById('authSetup').classList.remove('hidden');
     }
-    // If no biometrics, user can only use guest mode
 }
 
 async function doTouchIDRegister() {
     const res = await registerTouchID();
-    if (res.ok) {
-        showApp('owner');
-    } else {
-        document.getElementById('LE').textContent = 'Registrazione fallita: ' + (res.error || 'errore');
-        document.getElementById('LE').style.display = 'block';
-    }
+    if (res.ok) showApp('owner');
+    else { document.getElementById('LE').textContent = 'Registrazione fallita'; document.getElementById('LE').style.display = 'block'; }
 }
 
 async function doTouchIDLogin() {
     const res = await loginTouchID();
-    if (res.ok) {
-        showApp('owner');
-    } else {
-        document.getElementById('LE').textContent = 'Autenticazione fallita. Riprova.';
-        document.getElementById('LE').style.display = 'block';
-    }
+    if (res.ok) showApp('owner');
+    else { document.getElementById('LE').textContent = 'Autenticazione fallita'; document.getElementById('LE').style.display = 'block'; }
 }
 
-async function doGuestLogin() {
+function doGuestLogin() {
     const name = document.getElementById('guestName').value.trim();
-    if (!name) {
-        document.getElementById('LE').textContent = 'Inserisci il tuo nome.';
-        document.getElementById('LE').style.display = 'block';
-        return;
-    }
-    const res = await loginGuest(name);
-    if (res.ok) {
-        showApp('guest');
-    }
+    if (!name) { document.getElementById('LE').textContent = 'Inserisci il tuo nome'; document.getElementById('LE').style.display = 'block'; return; }
+    if (!cookiesAccepted) { document.getElementById('cookieBanner').classList.remove('hidden'); window._pendingGuestName = name; return; }
+    completeGuestLogin(name);
 }
 
-document.getElementById('guestName').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doGuestLogin();
-});
+async function completeGuestLogin(name) {
+    const res = await loginGuest(name);
+    if (res.ok) showApp('guest');
+}
+
+function acceptCookies() {
+    localStorage.setItem('fs_cookies', '1');
+    cookiesAccepted = true;
+    document.getElementById('cookieBanner').classList.add('hidden');
+    if (window._pendingGuestName) { completeGuestLogin(window._pendingGuestName); window._pendingGuestName = null; }
+}
+function rejectCookies() {
+    document.getElementById('cookieBanner').classList.add('hidden');
+    document.getElementById('LE').textContent = 'Devi accettare i cookie per accedere come ospite';
+    document.getElementById('LE').style.display = 'block';
+}
 
 async function showApp(role) {
     currentRole = role;
     document.getElementById('LS').style.display = 'none';
-    document.getElementById('APP').style.display = 'block';
+    document.getElementById('APP').classList.add('show');
     sessionStorage.setItem('fs_role', role);
-    initWidgets(); fetchAll(); buildApple(); buildTravel();
+    initWidgets(); fetchAll(); buildApple(); buildTravel(); fetchDividends(); startRealTime();
     setInterval(fetchAll, 300000);
 
-    // Show guest log panel for owner
     if (role === 'owner') {
-        const logData = await getGuestLog();
-        if (logData.log && logData.log.length > 0) {
-            document.getElementById('guestLogPanel').style.display = 'block';
-            const el = document.getElementById('guestLogEntries');
-            el.innerHTML = logData.log.reverse().slice(0, 20).map(g =>
-                `<div class="guest-entry">
-                    <span class="ge-name">${g.name}</span>
-                    <span class="ge-ip">${g.ip}</span>
-                    <span class="ge-time">${g.time_str}</span>
-                </div>`
-            ).join('');
-        }
+        loadVisitorLog();
+        document.getElementById('navVisitors').style.display = '';
+    } else {
+        document.getElementById('navVisitors').style.display = 'none';
     }
 }
 
-// Auto-login if session exists
+async function loadVisitorLog() {
+    const data = await getGuestLog();
+    if (!data.log) return;
+    const badge = document.getElementById('visitorBadge');
+    if (data.log.length > 0) { badge.textContent = data.log.length; badge.classList.remove('hidden'); }
+    const el = document.getElementById('visitorLogEntries');
+    if (!data.log.length) { el.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px;font-size:11px">Nessun accesso ospite registrato</div>'; return; }
+    el.innerHTML = data.log.reverse().map(g =>
+        `<div class="visitor-entry">
+            <span class="ve-dot"></span>
+            <span class="ve-name">${g.name}</span>
+            <span class="ve-ip">${g.ip}</span>
+            <span class="ve-time">${g.time_str}</span>
+        </div>`
+    ).join('');
+}
+
+// Auto-login
 const savedRole = sessionStorage.getItem('fs_role');
-if (savedRole) {
-    showApp(savedRole);
-} else {
-    initAuth();
+if (savedRole) showApp(savedRole);
+else initAuth();
+
+// ═══ SIDEBAR NAV ═══
+function go(id, el) {
+    document.querySelectorAll('.sec').forEach(s => s.classList.remove('ac'));
+    document.getElementById('sec-' + id)?.classList.add('ac');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (el) el.classList.add('active');
+}
+
+// ═══ CLOCK ═══
+setInterval(() => {
+    const now = new Date();
+    document.getElementById('sidebarTime').textContent = now.toLocaleTimeString('it-IT');
+    const giorni = ['DOM','LUN','MAR','MER','GIO','VEN','SAB'];
+    const mesi = ['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
+    document.getElementById('sidebarDate').textContent = `${giorni[now.getDay()]} ${now.getDate()} ${mesi[now.getMonth()]} ${now.getFullYear()}`;
+}, 1000);
+
+// ═══ REAL-TIME TICKER ═══
+const RT_MAP = {
+    spy: { sym: 'SPY', el: 'rt-spy', chEl: 'rt-spy-ch' },
+    qqq: { sym: 'QQQ', el: 'rt-qqq', chEl: 'rt-qqq-ch' },
+    ftsemib: { sym: 'FTSEMIB.MI', el: 'rt-ftsemib', chEl: 'rt-ftsemib-ch', alt: 'ISP.MI' },
+    btc: { sym: 'BTC-USD', el: 'rt-btc', chEl: 'rt-btc-ch' },
+    gold: { sym: 'GC=F', el: 'rt-gold', chEl: 'rt-gold-ch' },
+    eurusd: { sym: 'EURUSD=X', el: 'rt-eurusd', chEl: 'rt-eurusd-ch' }
+};
+
+async function updateRealTimeTicker() {
+    for (const [key, cfg] of Object.entries(RT_MAP)) {
+        try {
+            const q = await fmpQuote(cfg.sym) || await yhQuote(cfg.sym);
+            if (q && q.p > 0) {
+                const dp = q.p < 10 ? 4 : q.p < 100 ? 2 : q.p > 10000 ? 0 : 2;
+                document.getElementById(cfg.el).textContent = Number(q.p).toLocaleString('it-IT', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+                const chEl = document.getElementById(cfg.chEl);
+                const ch = q.ch || 0;
+                chEl.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
+                chEl.className = 'rt-change ' + (ch > 0 ? 'rt-up' : ch < 0 ? 'rt-down' : 'rt-flat');
+            }
+        } catch (e) {}
+    }
+}
+
+function startRealTime() {
+    updateRealTimeTicker();
+    setInterval(updateRealTimeTicker, 15000); // Every 15 seconds
+}
+
+// ═══ DIVIDENDS ═══
+async function fetchDividends() {
+    const FMP = 'https://financialmodelingprep.com/api/v3';
+    const KEY = FMP_KEY;
+
+    // Calendar dividends
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const future = new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0];
+        const r = await fetch(`${FMP}/stock_dividend_calendar?from=${today}&to=${future}&apikey=${KEY}`, { signal: AbortSignal.timeout(10000) });
+        if (r.ok) {
+            const data = await r.json();
+            const el = document.getElementById('divCalendar');
+            if (!data.length) { el.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px">Nessun dividendo nei prossimi 30 giorni</div>'; }
+            else {
+                el.innerHTML = '<div class="tw"><table><thead><tr><th style="text-align:left">Ticker</th><th style="text-align:left">Azienda</th><th>Dividendo</th><th>Yield</th><th>Ex-Date</th><th>Pagamento</th><th>Status</th></tr></thead><tbody>' +
+                data.slice(0, 50).map(d => {
+                    const exDate = new Date(d.date);
+                    const payDate = d.paymentDate ? new Date(d.paymentDate) : null;
+                    const isUpcoming = exDate > new Date();
+                    return `<tr>
+                        <td><span class="tk">${d.symbol}</span></td>
+                        <td class="nm2">${d.label || ''}</td>
+                        <td class="mono" style="color:var(--gn)">$${(d.dividend || 0).toFixed(2)}</td>
+                        <td class="mono">${d.adjDividend ? (d.adjDividend).toFixed(2) + '%' : '—'}</td>
+                        <td class="mono">${exDate.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })}</td>
+                        <td class="mono">${payDate ? payDate.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : '—'}</td>
+                        <td><span class="div-badge ${isUpcoming ? 'div-upcoming' : 'div-paid'}">${isUpcoming ? 'PROSSIMO' : 'EX-DIV'}</span></td>
+                    </tr>`;
+                }).join('') + '</tbody></table></div>';
+            }
+        }
+    } catch (e) { document.getElementById('divCalendar').innerHTML = '<div style="color:var(--tx3);text-align:center;padding:16px;font-size:11px">Errore caricamento</div>'; }
+
+    // Your stocks dividends
+    const myStocks = ['AAPL','MSFT','JPM','V','ENI.MI','ENEL.MI','ISP.MI'];
+    const upcoming = document.getElementById('divUpcoming');
+    let upHtml = '';
+    for (const sym of myStocks) {
+        try {
+            const r = await fetch(`${FMP}/historical-price-full/stock_dividend/${sym}?apikey=${KEY}`, { signal: AbortSignal.timeout(8000) });
+            if (r.ok) {
+                const data = await r.json();
+                const hist = data.historical || [];
+                if (hist.length > 0) {
+                    const last = hist[0];
+                    const nextEstimate = new Date(last.date);
+                    nextEstimate.setFullYear(nextEstimate.getFullYear() + 1);
+                    upHtml += `<div class="div-card">
+                        <span class="div-ticker">${sym}</span>
+                        <span class="div-name">${last.label || ''}</span>
+                        <span class="div-yield" title="Ultimo dividendo">$${(last.dividend || 0).toFixed(2)}</span>
+                        <span class="div-date" title="Ultimo ex-date">${new Date(last.date).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' })}</span>
+                        <span class="div-badge div-exdiv" title="Frequenza">${last.frequency || 'Q'}</span>
+                    </div>`;
+                }
+            }
+        } catch (e) {}
+    }
+    upcoming.innerHTML = upHtml || '<div style="color:var(--tx3);text-align:center;padding:16px;font-size:11px">Nessun dato disponibile</div>';
+
+    // Top yield
+    try {
+        const r = await fetch(`${FMP}/stock-screener?dividendMoreThan=3&limit=15&apikey=${KEY}`, { signal: AbortSignal.timeout(10000) });
+        if (r.ok) {
+            const data = await r.json();
+            document.getElementById('divTopYield').innerHTML = data.slice(0, 10).map(d =>
+                `<div class="div-card">
+                    <span class="div-ticker">${d.symbol}</span>
+                    <span class="div-name">${(d.companyName || '').substring(0, 25)}</span>
+                    <span class="div-yield">${(d.lastAnnualDividend || 0).toFixed(2)}%</span>
+                    <span class="div-date">$${(d.price || 0).toFixed(2)}</span>
+                    <span class="div-badge div-upcoming">TOP</span>
+                </div>`
+            ).join('') || '<div style="color:var(--tx3);text-align:center">—</div>';
+        }
+    } catch (e) {}
+
+    // Aristocrats (25+ years)
+    const aristocrats = ['JNJ','PG','KO','PEP','MMM','ABT','T','XOM','CVX','MCD','WMT','CL'];
+    let aristHtml = '';
+    for (const sym of aristocrats.slice(0, 8)) {
+        try {
+            const q = await fmpQuote(sym);
+            if (q) aristHtml += `<div class="div-card"><span class="div-ticker">${sym}</span><span class="div-name">25+ anni</span><span class="div-yield">$${q.p.toFixed(2)}</span><span class="div-date">${q.ch >= 0 ? '+' : ''}${q.ch.toFixed(2)}%</span><span class="div-badge div-paid">ARISTOCRAT</span></div>`;
+        } catch (e) {}
+    }
+    document.getElementById('divAristocrats').innerHTML = aristHtml || '<div style="color:var(--tx3);text-align:center">—</div>';
 }
 </script>
-
-<!-- Main app JS (all the original FinScope logic) -->
-<script src="/dashboard/app.js"></script>
-
-<script>
-// Clock
-setInterval(() => {
-    const el = document.getElementById('CK');
-    if (el) el.innerHTML = new Date().toLocaleTimeString('it-IT') + ' &middot; ' + new Date().toLocaleDateString('it-IT');
-}, 1000);
-</script>
-
 </body>
 </html>
