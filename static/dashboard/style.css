@@ -3,8 +3,8 @@
 
 :root {
   --bg: #030608;
-  --glass: rgba(8,14,28,.55);
-  --glass-hover: rgba(12,20,40,.7);
+  --glass: rgba(6,12,24,.35);
+  --glass-hover: rgba(10,18,36,.45);
   --glass-border: rgba(0,180,220,.08);
   --glass-glow: rgba(0,180,220,.15);
   --cyan: #00c8e0;
