@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/hud.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <!-- Boot screen -->
+    <div id="boot-screen">
+        <div id="boot-text"></div>
+        <div id="boot-bar"><div id="boot-bar-fill"></div></div>
+    </div>
+
+    <!-- Main HUD -->
+    <div id="hud" class="hidden">
+        <!-- Left panels -->
+        <div id="panel-left">
+            <div class="panel" id="panel-system">
+                <div class="panel-header">SISTEMA</div>
+                <div class="stat-row">
+                    <span class="stat-label">CPU</span>
+                    <div class="stat-bar"><div class="stat-bar-fill" id="cpu-bar"></div></div>
+                    <span class="stat-value" id="cpu-val">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">RAM</span>
+                    <div class="stat-bar"><div class="stat-bar-fill" id="ram-bar"></div></div>
+                    <span class="stat-value" id="ram-val">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">DISCO</span>
+                    <div class="stat-bar"><div class="stat-bar-fill" id="disk-bar"></div></div>
+                    <span class="stat-value" id="disk-val">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">BATT</span>
+                    <div class="stat-bar"><div class="stat-bar-fill" id="batt-bar"></div></div>
+                    <span class="stat-value" id="batt-val">0%</span>
+                </div>
+                <div class="stat-info" id="uptime-val">Uptime: --</div>
+            </div>
+
+            <div class="panel" id="panel-music">
+                <div class="panel-header">MUSICA</div>
+                <div id="music-track" class="music-info">--</div>
+                <div id="music-artist" class="music-info dim">--</div>
+                <div class="music-controls">
+                    <button class="hud-btn" id="btn-prev" title="Precedente">&#9664;&#9664;</button>
+                    <button class="hud-btn" id="btn-toggle" title="Play/Pausa">&#9654;&#10073;&#10073;</button>
+                    <button class="hud-btn" id="btn-next" title="Prossima">&#9654;&#9654;</button>
+                </div>
+                <div id="music-state" class="music-state"></div>
+            </div>
+        </div>
+
+        <!-- Center: Three.js reactor -->
+        <div id="reactor-container">
+            <canvas id="reactor-canvas"></canvas>
+            <div id="reactor-label">J.A.R.V.I.S. <span class="online">ONLINE</span></div>
+            <div id="reactor-time"></div>
+        </div>
+
+        <!-- Right: Chat -->
+        <div id="panel-right">
+            <div class="panel" id="panel-chat">
+                <div class="panel-header">COMUNICAZIONI</div>
+                <div id="chat-messages"></div>
+                <div id="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Scrivi a Jarvis..." autocomplete="off">
+                    <button class="hud-btn" id="btn-send" title="Invia">&#10148;</button>
+                    <button class="hud-btn" id="btn-mic" title="Microfono">&#127908;</button>
+                </div>
+                <div id="voice-status" class="hidden">Ascolto...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash overlay for clap events -->
+    <div id="flash-overlay" class="hidden"></div>
+
+    <!-- Gesture feedback indicator -->
+    <div id="gesture-indicator" class="hidden"></div>
+
+    <script type="module" src="/static/js/main.js"></script>
+</body>
+</html>

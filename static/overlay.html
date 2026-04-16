@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. Overlay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
+    <style>
+        :root {
+            --cyan: #00d4ff;
+            --cyan-dim: #004466;
+            --cyan-glow: #00d4ff80;
+            --cyan-bright: #80eeff;
+            --border: #00d4ff30;
+            --text: #c8d6e5;
+            --text-dim: #5a6a7a;
+            --font-mono: 'Share Tech Mono', monospace;
+            --font-display: 'Orbitron', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            background: transparent !important;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            font-family: var(--font-mono);
+            color: var(--text);
+            pointer-events: none;
+        }
+
+        .hud-element {
+            pointer-events: none;
+            position: fixed;
+        }
+
+        /* ── Top-left: System stats ─────────────────────── */
+        #overlay-stats {
+            top: 40px;
+            left: 20px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px 16px;
+            backdrop-filter: blur(8px);
+            min-width: 200px;
+        }
+
+        .overlay-title {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            color: var(--cyan);
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .ov-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            font-size: 0.7rem;
+        }
+
+        .ov-stat-label {
+            color: var(--text-dim);
+            width: 36px;
+            font-size: 0.6rem;
+        }
+
+        .ov-stat-bar {
+            flex: 1;
+            height: 3px;
+            background: var(--cyan-dim);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .ov-stat-bar-fill {
+            height: 100%;
+            background: var(--cyan);
+            box-shadow: 0 0 4px var(--cyan-glow);
+            transition: width 0.5s;
+        }
+
+        .ov-stat-val {
+            color: var(--cyan);
+            font-size: 0.65rem;
+            width: 32px;
+            text-align: right;
+        }
+
+        /* ── Top-right: Time + music ────────────────────── */
+        #overlay-info {
+            top: 40px;
+            right: 20px;
+            text-align: right;
+        }
+
+        #overlay-time {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--cyan);
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--cyan-glow);
+        }
+
+        #overlay-date {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+
+        #overlay-music {
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: var(--cyan);
+            background: rgba(10, 10, 15, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 8px 12px;
+            backdrop-filter: blur(8px);
+        }
+
+        .music-track { font-size: 0.75rem; }
+        .music-artist { color: var(--text-dim); font-size: 0.6rem; margin-top: 2px; }
+
+        /* ── Bottom-center: Jarvis status ───────────────── */
+        #overlay-status {
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        #overlay-jarvis-label {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            color: var(--cyan);
+            letter-spacing: 5px;
+            text-shadow: 0 0 15px var(--cyan-glow);
+        }
+
+        #overlay-jarvis-label .online {
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff8860;
+        }
+
+        /* ── Gesture indicator ──────────────────────────── */
+        #overlay-gesture {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            color: var(--cyan-bright);
+            letter-spacing: 4px;
+            text-shadow: 0 0 30px var(--cyan-glow), 0 0 60px var(--cyan-glow);
+            background: rgba(0, 20, 40, 0.7);
+            padding: 16px 40px;
+            border: 1px solid var(--cyan);
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #overlay-gesture.show { opacity: 1; }
+
+        /* ── Corner brackets (decorative) ───────────────── */
+        .corner-bracket {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border-color: var(--cyan-dim);
+            border-style: solid;
+            pointer-events: none;
+        }
+        .corner-tl { top: 15px; left: 15px; border-width: 1px 0 0 1px; }
+        .corner-tr { top: 15px; right: 15px; border-width: 1px 1px 0 0; }
+        .corner-bl { bottom: 15px; left: 15px; border-width: 0 0 1px 1px; }
+        .corner-br { bottom: 15px; right: 15px; border-width: 0 1px 1px 0; }
+
+        /* ── Bottom-left: Email preview ─────────────────── */
+        #overlay-emails {
+            bottom: 60px;
+            left: 20px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px 14px;
+            backdrop-filter: blur(8px);
+            max-width: 320px;
+        }
+
+        .email-item {
+            margin-bottom: 6px;
+            font-size: 0.6rem;
+        }
+
+        .email-from {
+            color: var(--cyan);
+        }
+
+        .email-subject {
+            color: var(--text-dim);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Scan line animation across the whole screen */
+        #scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan-glow), transparent);
+            animation: scanMove 4s linear infinite;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        @keyframes scanMove {
+            0% { top: 0; }
+            100% { top: 100vh; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative corners -->
+    <div class="corner-bracket corner-tl"></div>
+    <div class="corner-bracket corner-tr"></div>
+    <div class="corner-bracket corner-bl"></div>
+    <div class="corner-bracket corner-br"></div>
+
+    <!-- Scan line -->
+    <div id="scanline"></div>
+
+    <!-- System stats -->
+    <div class="hud-element" id="overlay-stats">
+        <div class="overlay-title">SISTEMA</div>
+        <div class="ov-stat">
+            <span class="ov-stat-label">CPU</span>
+            <div class="ov-stat-bar"><div class="ov-stat-bar-fill" id="ov-cpu"></div></div>
+            <span class="ov-stat-val" id="ov-cpu-v">0%</span>
+        </div>
+        <div class="ov-stat">
+            <span class="ov-stat-label">RAM</span>
+            <div class="ov-stat-bar"><div class="ov-stat-bar-fill" id="ov-ram"></div></div>
+            <span class="ov-stat-val" id="ov-ram-v">0%</span>
+        </div>
+        <div class="ov-stat">
+            <span class="ov-stat-label">BATT</span>
+            <div class="ov-stat-bar"><div class="ov-stat-bar-fill" id="ov-batt"></div></div>
+            <span class="ov-stat-val" id="ov-batt-v">0%</span>
+        </div>
+    </div>
+
+    <!-- Time + Music -->
+    <div class="hud-element" id="overlay-info">
+        <div id="overlay-time"></div>
+        <div id="overlay-date"></div>
+        <div id="overlay-music" style="display:none">
+            <div class="music-track" id="ov-track"></div>
+            <div class="music-artist" id="ov-artist"></div>
+        </div>
+    </div>
+
+    <!-- Email preview -->
+    <div class="hud-element" id="overlay-emails" style="display:none">
+        <div class="overlay-title">EMAIL</div>
+        <div id="email-list"></div>
+    </div>
+
+    <!-- Jarvis status -->
+    <div class="hud-element" id="overlay-status">
+        <div id="overlay-jarvis-label">J.A.R.V.I.S. <span class="online">ONLINE</span></div>
+    </div>
+
+    <!-- Gesture indicator -->
+    <div class="hud-element" id="overlay-gesture"></div>
+
+    <script>
+        // WebSocket connection
+        const ws = new WebSocket(`ws://${location.hostname}:5100/ws`);
+
+        ws.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            if (data.type === 'status') updateOverlay(data.data);
+            if (data.type === 'gesture') showGesture(data.gesture);
+        };
+
+        ws.onclose = () => setTimeout(() => location.reload(), 3000);
+
+        function updateOverlay(s) {
+            setBar('ov-cpu', 'ov-cpu-v', s.cpu);
+            setBar('ov-ram', 'ov-ram-v', s.memory);
+            if (s.battery >= 0) {
+                const lbl = `${Math.round(s.battery)}%${s.battery_charging ? ' ⚡' : ''}`;
+                setBar('ov-batt', 'ov-batt-v', s.battery, lbl);
+            }
+
+            // Music
+            const musicEl = document.getElementById('overlay-music');
+            if (s.music && (s.music.state === 'playing' || s.music.state === 'paused')) {
+                musicEl.style.display = 'block';
+                document.getElementById('ov-track').textContent = s.music.track || '--';
+                document.getElementById('ov-artist').textContent = s.music.artist || '--';
+            } else {
+                musicEl.style.display = 'none';
+            }
+        }
+
+        function setBar(barId, valId, pct, label) {
+            document.getElementById(barId).style.width = `${Math.min(100, pct)}%`;
+            document.getElementById(valId).textContent = label || `${Math.round(pct)}%`;
+        }
+
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('overlay-time').textContent = `${h}:${m}`;
+
+            const giorni = ['DOM', 'LUN', 'MAR', 'MER', 'GIO', 'VEN', 'SAB'];
+            const mesi = ['GEN', 'FEB', 'MAR', 'APR', 'MAG', 'GIU', 'LUG', 'AGO', 'SET', 'OTT', 'NOV', 'DIC'];
+            document.getElementById('overlay-date').textContent =
+                `${giorni[now.getDay()]} ${now.getDate()} ${mesi[now.getMonth()]} ${now.getFullYear()}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Fetch emails
+        fetch('/api/emails')
+            .then(r => r.json())
+            .then(data => {
+                if (data.emails && data.emails.length > 0) {
+                    const el = document.getElementById('overlay-emails');
+                    el.style.display = 'block';
+                    const list = document.getElementById('email-list');
+                    data.emails.slice(0, 3).forEach(e => {
+                        const div = document.createElement('div');
+                        div.className = 'email-item';
+                        div.innerHTML = `<span class="email-from">${e.from}</span><br><span class="email-subject">${e.subject}</span>`;
+                        list.appendChild(div);
+                    });
+                }
+            })
+            .catch(() => {});
+
+        // Gesture indicator
+        let gestureTimer;
+        function showGesture(gesture) {
+            const el = document.getElementById('overlay-gesture');
+            const labels = {
+                'pinch_start': '✊ FINESTRA AFFERRATA',
+                'pinch_end': '👌 RILASCIATA',
+                'swipe_right': '▶ DESKTOP SUCCESSIVO',
+                'swipe_left': '◀ DESKTOP PRECEDENTE',
+            };
+            if (!labels[gesture]) return;
+            el.textContent = labels[gesture];
+            el.classList.add('show');
+            clearTimeout(gestureTimer);
+            gestureTimer = setTimeout(() => el.classList.remove('show'), 1200);
+        }
+    </script>
+</body>
+</html>

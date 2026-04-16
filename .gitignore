@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+tts_cache/
+*.log
+node_modules/
+auth_data.json
+guest_log.json
+config.json
+overlay/node_modules/
+.DS_Store
+hand_landmarker.task
+.claude/

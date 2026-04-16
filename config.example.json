@@ -1,0 +1,11 @@
+{
+  "gemini_api_key": "",
+  "tts_voice": "it-IT-DiegoNeural",
+  "tts_enabled": true,
+  "language": "it-IT",
+  "user_name": "Dennis",
+  "status_interval_seconds": 2,
+  "max_tts_cache_files": 50,
+  "gmail_address": "",
+  "gmail_app_password": ""
+}
