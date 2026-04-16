@@ -7,6 +7,30 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 
 const D={stocks:[],etfs:[],bonds:[],commodities:[],crypto:[],currencies:[]};
 
+// ═══ EUR CONVERSION ═══
+let eurRates = {}; // { USD: 1.08, GBP: 0.86, ... } = 1 EUR in foreign currency
+
+async function loadEurRates() {
+  try {
+    const r = await fetch('https://api.exchangerate-api.com/v4/latest/EUR', { signal: AbortSignal.timeout(8000) });
+    if (r.ok) { const d = await r.json(); eurRates = d.rates || {}; console.log('[EUR] Rates loaded, USD=', eurRates.USD); }
+  } catch(e) {
+    try { const r2 = await fetch('https://open.er-api.com/v6/latest/EUR', { signal: AbortSignal.timeout(8000) }); if (r2.ok) { const d = await r2.json(); eurRates = d.rates || {}; } } catch(e2) {}
+  }
+}
+
+function toEur(price, currency) {
+  if (!price || price <= 0) return 0;
+  if (!currency || currency === 'EUR' || currency === 'Euro') return price;
+  const cur = currency.toUpperCase();
+  const rate = eurRates[cur];
+  if (rate && rate > 0) return price / rate;
+  // Common fallbacks
+  if (cur === 'USD' || cur === 'USX') return price / (eurRates.USD || 1.08);
+  if (cur === 'GBP' || cur === 'GBp') return (cur === 'GBp' ? price / 100 : price) / (eurRates.GBP || 0.86);
+  return price; // unknown currency, return as-is
+}
+
 // ═══ ASSET DATABASES (COMPLETE — all originals) ═══
 const A_STOCKS=[
   {s:'AAPL',n:'Apple',r:'US'},{s:'MSFT',n:'Microsoft',r:'US'},{s:'GOOGL',n:'Alphabet',r:'US'},
@@ -273,14 +297,16 @@ function sortTable(key,sortType,btn){
 function buildTable(containerId,data,key,isFX){
   const el=document.getElementById(containerId);if(!el)return;
   if(!data.length){el.innerHTML='<div class="ld"><div class="sp"></div> Caricamento dati...</div>';return}
-  let h='<div class="tw"><table><thead><tr><th>Ticker</th><th>Nome</th><th>Prezzo</th><th>Val.</th><th>Var %</th><th>Segnale</th><th>Src</th></tr></thead><tbody>';
+  let h='<div class="tw"><table><thead><tr><th>Ticker</th><th>Nome</th><th>Prezzo EUR</th><th>Var %</th><th>Segnale</th><th>Src</th></tr></thead><tbody>';
   data.forEach((d,i)=>{
-    const dp=d.p<10?4:2;const sig=getSignal(d);
+    const sig=getSignal(d);
     const sym=isFX?d.pair:d.sym;const name=isFX?'':d.name||'';
+    // Convert to EUR
+    const eurPrice = isFX ? d.p : toEur(d.p, d.cur);
+    const dp = eurPrice < 1 ? 4 : eurPrice < 100 ? 2 : eurPrice > 10000 ? 0 : 2;
     h+=`<tr onclick="${isFX?'selFX':'selAsset'}('${key}',${i})" id="${key}_r${i}" data-sym="${(sym||'').toLowerCase()}" data-name="${(name||'').toLowerCase()}">`;
     h+=`<td><span class="tk">${sym}</span></td><td class="nm2">${name}</td>`;
-    h+=`<td class="mono">${d.p>0?fmt(d.p,dp):'—'}</td>`;
-    h+=`<td style="color:var(--tx3);font-size:9px">${d.cur||''}</td>`;
+    h+=`<td class="mono">${eurPrice>0 ? (isFX ? fmt(eurPrice, dp) : '€' + fmt(eurPrice, dp)) : '—'}</td>`;
     h+=`<td class="${(d.ch||0)>=0?'po':'ne'} mono">${d.p>0?pf(d.ch):'—'}</td>`;
     h+=`<td><span class="${sig.cls}">${sig.label}</span></td>`;
     h+=`<td>${srcBadge(d.src)}</td></tr>`;

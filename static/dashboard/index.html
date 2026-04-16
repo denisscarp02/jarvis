@@ -286,7 +286,7 @@ async function showApp(role) {
     document.getElementById('LS').style.display = 'none';
     document.getElementById('APP').classList.add('show');
     sessionStorage.setItem('fs_role', role);
-    initWidgets(); fetchAll(); buildApple(); buildTravel(); fetchDividends(); startRealTime();
+    await loadEurRates(); initWidgets(); fetchAll(); buildApple(); buildTravel(); fetchDividends(); startRealTime();
     setInterval(fetchAll, 300000);
 
     if (role === 'owner') {
@@ -351,8 +351,12 @@ async function updateRealTimeTicker() {
         try {
             const q = await fmpQuote(cfg.sym) || await yhQuote(cfg.sym);
             if (q && q.p > 0) {
-                const dp = q.p < 10 ? 4 : q.p < 100 ? 2 : q.p > 10000 ? 0 : 2;
-                document.getElementById(cfg.el).textContent = Number(q.p).toLocaleString('it-IT', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+                // Convert to EUR (except EURUSD which IS the rate)
+                const isForex = key === 'eurusd';
+                const eurPrice = isForex ? q.p : toEur(q.p, q.cur || 'USD');
+                const dp = eurPrice < 10 ? 4 : eurPrice < 100 ? 2 : eurPrice > 10000 ? 0 : 2;
+                const prefix = isForex ? '' : '€';
+                document.getElementById(cfg.el).textContent = prefix + Number(eurPrice).toLocaleString('it-IT', { minimumFractionDigits: dp, maximumFractionDigits: dp });
                 const chEl = document.getElementById(cfg.chEl);
                 const ch = q.ch || 0;
                 chEl.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
