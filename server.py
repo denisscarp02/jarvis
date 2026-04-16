@@ -731,6 +731,10 @@ app.mount("/dashboard", StaticFiles(directory=str(BASE_DIR / "static" / "dashboa
 async def serve_dashboard():
     return FileResponse(str(BASE_DIR / "static" / "dashboard" / "index.html"))
 
+@app.get("/email-report")
+async def serve_email_report():
+    return FileResponse(str(BASE_DIR / "static" / "dashboard" / "email-report.html"))
+
 # ── Auth: WebAuthn + Guest ───────────────────────────────────────────────────
 
 AUTH_FILE = BASE_DIR / "auth_data.json"

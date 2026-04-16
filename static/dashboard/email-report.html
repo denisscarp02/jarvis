@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Report — 16 Aprile 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;padding:20px}
+.container{max-width:1200px;margin:0 auto}
+h1{font-size:24px;font-weight:700;margin-bottom:4px}
+.subtitle{color:#94a3b8;font-size:13px;margin-bottom:24px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.stat{background:#1a1a2e;border-radius:12px;padding:16px;border:1px solid #2a2a4a}
+.stat-val{font-size:28px;font-weight:700;margin-bottom:2px}
+.stat-label{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px}
+.stat-accent{color:#6366f1} .stat-green{color:#34d399} .stat-red{color:#f87171} .stat-orange{color:#fbbf24} .stat-blue{color:#60a5fa}
+
+.alert{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:start;gap:10px}
+.alert-icon{font-size:20px;flex-shrink:0} .alert-text{font-size:12px;line-height:1.6} .alert-title{font-weight:700;color:#f87171;font-size:13px}
+
+.tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid #2a2a4a;padding-bottom:0}
+.tab{padding:10px 20px;background:transparent;border:none;color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;transition:all .2s}
+.tab:hover{color:#e2e8f0} .tab.on{color:#6366f1;border-bottom-color:#6366f1}
+
+.panel{display:none} .panel.on{display:block}
+
+.email-row{display:grid;grid-template-columns:auto 36px 1fr auto;gap:10px;align-items:center;padding:10px 14px;background:#1a1a2e;border-radius:10px;margin-bottom:6px;border:1px solid #2a2a4a;font-size:12px;transition:border-color .2s}
+.email-row:hover{border-color:#6366f1}
+.email-time{color:#94a3b8;font-size:10px;font-family:monospace;white-space:nowrap}
+.email-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.icon-important{background:rgba(99,102,241,.15)} .icon-newsletter{background:rgba(251,191,36,.1)} .icon-spam{background:rgba(248,113,113,.1)} .icon-scam{background:rgba(248,113,113,.2)}
+.email-from{font-weight:600;color:#e2e8f0;margin-bottom:1px}
+.email-subject{color:#94a3b8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.email-badge{font-size:8px;padding:2px 8px;border-radius:5px;font-weight:700;white-space:nowrap}
+.badge-important{background:rgba(99,102,241,.15);color:#818cf8}
+.badge-newsletter{background:rgba(251,191,36,.1);color:#fbbf24}
+.badge-spam{background:rgba(248,113,113,.1);color:#f87171}
+.badge-scam{background:rgba(248,113,113,.2);color:#ff4444}
+.badge-update{background:rgba(96,165,250,.1);color:#60a5fa}
+
+.nl-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:10px 14px;background:#1a1a2e;border-radius:10px;margin-bottom:6px;border:1px solid #2a2a4a}
+.nl-sender{font-weight:600;font-size:12px} .nl-freq{color:#94a3b8;font-size:11px}
+.nl-action{font-size:9px;padding:3px 10px;border-radius:5px;font-weight:700}
+.nl-keep{background:rgba(52,211,153,.1);color:#34d399} .nl-unsub{background:rgba(251,191,36,.1);color:#fbbf24}
+
+.spam-card{background:#1a1a2e;border:1px solid #2a2a4a;border-radius:12px;padding:14px;margin-bottom:8px}
+.spam-card.scam{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.05)}
+.spam-from{font-size:11px;color:#f87171;font-weight:700;margin-bottom:2px}
+.spam-subject{font-size:12px;color:#e2e8f0;margin-bottom:4px}
+.spam-reason{font-size:10px;color:#94a3b8}
+
+@media(max-width:768px){.stats{grid-template-columns:1fr 1fr}.email-row{grid-template-columns:auto 1fr auto}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>📧 Email Report — Giovedi 16 Aprile 2026</h1>
+<div class="subtitle">Account: denycarp02@gmail.com · 71.427 email totali · Report generato alle 12:30</div>
+
+<!-- STATS -->
+<div class="stats">
+<div class="stat"><div class="stat-val stat-accent">59</div><div class="stat-label">Email Totale (24h)</div></div>
+<div class="stat"><div class="stat-val stat-red">6</div><div class="stat-label">Spam Intercettati</div></div>
+<div class="stat"><div class="stat-val stat-orange">72%</div><div class="stat-label">Newsletter / Promo</div></div>
+<div class="stat"><div class="stat-val stat-green">7</div><div class="stat-label">Email Importanti</div></div>
+<div class="stat"><div class="stat-val stat-red">2</div><div class="stat-label">Truffe / Phishing</div></div>
+</div>
+
+<!-- ALERT -->
+<div class="alert">
+<div class="alert-icon">🚨</div>
+<div>
+<div class="alert-title">2 Email di Phishing Rilevate!</div>
+<div class="alert-text">
+<b>1.</b> "Team di Cloud Drive" &lt;edu32_109408@olq7.j7g.mria.<b>crimea.ua</b>&gt; — Falso avviso spazio cloud pieno. Dominio ucraino sospetto.<br>
+<b>2.</b> "HotMood" &lt;brandon@webframeworks.<b>ru</b>&gt; — Finto messaggio dating con link malevolo. Dominio russo.
+</div>
+</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+<button class="tab on" onclick="showTab('daily',this)">📋 Report Giornaliero</button>
+<button class="tab" onclick="showTab('important',this)">⭐ Importanti (7)</button>
+<button class="tab" onclick="showTab('newsletter',this)">📰 Newsletter (42)</button>
+<button class="tab" onclick="showTab('spam',this)">🛑 Spam (6)</button>
+</div>
+
+<!-- REPORT GIORNALIERO -->
+<div class="panel on" id="tab-daily">
+
+<div class="email-row"><span class="email-time">10:19</span><div class="email-icon icon-newsletter">📺</div><div><div class="email-from">Programmi TV</div><div class="email-subject">I tuoi programmi TV giovedi 16 aprile</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">10:09</span><div class="email-icon icon-newsletter">🎓</div><div><div class="email-from">Coursera</div><div class="email-subject">Ending soon: Save 40% off new courses</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">10:00</span><div class="email-icon icon-newsletter">👕</div><div><div class="email-from">Pampling</div><div class="email-subject">Mamma questa e x te!</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">09:32</span><div class="email-icon icon-important">✅</div><div><div class="email-from">Unsplash Team</div><div class="email-subject">Confirm your Unsplash Account</div></div><span class="email-badge badge-important">IMPORTANTE</span></div>
+
+<div class="email-row"><span class="email-time">09:30</span><div class="email-icon icon-newsletter">🏖</div><div><div class="email-from">Emma di Voyage Prive</div><div class="email-subject">Rodi fino a -49% | Sardegna tra mare e montagna</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">09:18</span><div class="email-icon icon-important">💼</div><div><div class="email-from">lavoro trabajo.org</div><div class="email-subject">10 offerte di Tirocinio come Ingegnere di Processo a Florence</div></div><span class="email-badge badge-important">IMPORTANTE</span></div>
+
+<div class="email-row"><span class="email-time">09:12</span><div class="email-icon icon-newsletter">👗</div><div><div class="email-from">Zara</div><div class="email-subject">ZARA SRPLS. COLLECTION 16. Drop 02</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">09:09</span><div class="email-icon icon-newsletter">👟</div><div><div class="email-from">Foot Locker FLX</div><div class="email-subject">Due AJ1 Low. Un Vincitore.</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">08:38</span><div class="email-icon icon-newsletter">🔒</div><div><div class="email-from">Nuki Smart Lock</div><div class="email-subject">Ultima occasione! Risparmia il 20%</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">08:30</span><div class="email-icon icon-spam">🚗</div><div><div class="email-from">MOBILFOX</div><div class="email-subject">WIN THIS TESLA — Sospetto concorso fake</div></div><span class="email-badge badge-spam">SOSPETTO</span></div>
+
+<div class="email-row"><span class="email-time">08:08</span><div class="email-icon icon-newsletter">💍</div><div><div class="email-from">Pandora</div><div class="email-subject">Anelli, anelli, anelli!</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">08:01</span><div class="email-icon icon-newsletter">💄</div><div><div class="email-from">Marionnaud</div><div class="email-subject">il -33% ti sta aspettando!</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">07:50</span><div class="email-icon icon-important">🤖</div><div><div class="email-from">Claude (Statuspage)</div><div class="email-subject">Opus 4.6 elevated rate of errors — Resolved</div></div><span class="email-badge badge-update">UPDATE</span></div>
+
+<div class="email-row"><span class="email-time">07:28</span><div class="email-icon icon-important">🔐</div><div><div class="email-from">Google</div><div class="email-subject">Avviso di sicurezza — Password app creata per JARVIS</div></div><span class="email-badge badge-important">SICUREZZA</span></div>
+
+<div class="email-row"><span class="email-time">07:00</span><div class="email-icon icon-newsletter">👖</div><div><div class="email-from">Dressinn</div><div class="email-subject">Fai tendenza questa primavera con Tommy Jeans</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">06:49</span><div class="email-icon icon-newsletter">👟</div><div><div class="email-from">Vans</div><div class="email-subject">Promo di meta stagione: fino al 30% di sconto</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">00:25</span><div class="email-icon icon-important">📡</div><div><div class="email-from">Sky</div><div class="email-subject">SKY: Errore richiesta Sky Tg24 Sky Sport Insider</div></div><span class="email-badge badge-update">UPDATE</span></div>
+
+<div class="email-row"><span class="email-time">ieri 23:31</span><div class="email-icon icon-newsletter">🤖</div><div><div class="email-from">Josh from use.ai</div><div class="email-subject">Per cosa useresti davvero Use AI</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">ieri 23:00</span><div class="email-icon icon-newsletter">🏠</div><div><div class="email-from">idealista</div><div class="email-subject">La guida alle nuove regole per gli affitti brevi 2026</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">ieri 20:49</span><div class="email-icon icon-newsletter">🏥</div><div><div class="email-from">CupSolidale</div><div class="email-subject">Cup Solidale cambia nome in Cup24</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">ieri 18:00</span><div class="email-icon icon-important">📦</div><div><div class="email-from">Euronics</div><div class="email-subject">Stiamo preparando il tuo ordine n.514500822</div></div><span class="email-badge badge-important">ORDINE</span></div>
+
+<div class="email-row"><span class="email-time">ieri 17:50</span><div class="email-icon icon-important">✈️</div><div><div class="email-from">Google Flights</div><div class="email-subject">Voli da Bologna a Barcellona, a partire da 62 EUR</div></div><span class="email-badge badge-important">VIAGGIO</span></div>
+
+<div class="email-row"><span class="email-time">ieri 16:24</span><div class="email-icon icon-important">🏦</div><div><div class="email-from">RelaxBanking</div><div class="email-subject">E' stato effettuato un accesso all'app RelaxBanking</div></div><span class="email-badge badge-important">BANCA</span></div>
+
+<div class="email-row"><span class="email-time">ieri 16:05</span><div class="email-icon icon-newsletter">📈</div><div><div class="email-from">Trade Republic</div><div class="email-subject">Il nostro nuovo servizio clienti</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+<div class="email-row"><span class="email-time">ieri 14:50</span><div class="email-icon icon-important">✈️</div><div><div class="email-from">Google Flights</div><div class="email-subject">Voli da Milano a Newark, New York, a partire da 391 EUR</div></div><span class="email-badge badge-important">VIAGGIO</span></div>
+
+<div class="email-row"><span class="email-time">ieri 14:41</span><div class="email-icon icon-newsletter">🏍</div><div><div class="email-from">Yamaha Racing</div><div class="email-subject">YART Yamaha Ready to Kick Off EWC Title Defence</div></div><span class="email-badge badge-newsletter">NEWSLETTER</span></div>
+
+</div>
+
+<!-- IMPORTANTI -->
+<div class="panel" id="tab-important">
+
+<div class="email-row"><span class="email-time">07:28</span><div class="email-icon icon-important">🔐</div><div><div class="email-from">Google</div><div class="email-subject">Avviso di sicurezza — Password app creata per JARVIS</div></div><span class="email-badge badge-important">SICUREZZA</span></div>
+<div style="padding:6px 14px 14px;font-size:11px;color:#94a3b8;margin-bottom:8px">→ Hai creato una password per l'app JARVIS. Se non sei stato tu, cambia subito la password di Google.</div>
+
+<div class="email-row"><span class="email-time">ieri 16:24</span><div class="email-icon icon-important">🏦</div><div><div class="email-from">RelaxBanking</div><div class="email-subject">Accesso all'app RelaxBanking — utente CARP DENISS</div></div><span class="email-badge badge-important">BANCA</span></div>
+<div style="padding:6px 14px 14px;font-size:11px;color:#94a3b8;margin-bottom:8px">→ Accesso bancario registrato ieri alle 16:12. Verifica che sia stato tu.</div>
+
+<div class="email-row"><span class="email-time">ieri 18:00</span><div class="email-icon icon-important">📦</div><div><div class="email-from">Euronics (noreply@euronics.it)</div><div class="email-subject">Stiamo preparando il tuo ordine n.514500822</div></div><span class="email-badge badge-important">ORDINE</span></div>
+<div style="padding:6px 14px 14px;font-size:11px;color:#94a3b8;margin-bottom:8px">→ Il tuo ordine Euronics e in preparazione presso Asmed SRL. Riceverai la consegna a breve.</div>
+
+<div class="email-row"><span class="email-time">09:32</span><div class="email-icon icon-important">✅</div><div><div class="email-from">Unsplash Team</div><div class="email-subject">Confirm your Unsplash Account</div></div><span class="email-badge badge-important">ATTIVAZIONE</span></div>
+<div style="padding:6px 14px 14px;font-size:11px;color:#94a3b8;margin-bottom:8px">→ Conferma il tuo account Unsplash cliccando il link nell'email.</div>
+
+<div class="email-row"><span class="email-time">09:18</span><div class="email-icon icon-important">💼</div><div><div class="email-from">lavoro trabajo.org</div><div class="email-subject">10 offerte di Tirocinio come Ingegnere di Processo a Florence</div></div><span class="email-badge badge-important">LAVORO</span></div>
+<div style="padding:6px 14px 14px;font-size:11px;color:#94a3b8;margin-bottom:8px">→ 10 nuove offerte di tirocinio in Toscana. Scadono questa settimana.</div>
+
+<div class="email-row"><span class="email-time">ieri 17:50</span><div class="email-icon icon-important">✈️</div><div><div class="email-from">Google Flights</div><div class="email-subject">Voli Bologna → Barcellona da 62 EUR</div></div><span class="email-badge badge-important">VIAGGIO</span></div>
+<div style="padding:6px 14px 14px;font-size:11px;color:#94a3b8;margin-bottom:8px">→ Prezzo molto basso per agosto. Considera di prenotare.</div>
+
+<div class="email-row"><span class="email-time">ieri 14:50</span><div class="email-icon icon-important">✈️</div><div><div class="email-from">Google Flights</div><div class="email-subject">Voli Milano → Newark, New York da 391 EUR</div></div><span class="email-badge badge-important">VIAGGIO</span></div>
+<div style="padding:6px 14px 14px;font-size:11px;color:#94a3b8;margin-bottom:8px">→ Prezzo monitorato per maggio. Buon prezzo per New York.</div>
+
+</div>
+
+<!-- NEWSLETTER -->
+<div class="panel" id="tab-newsletter">
+
+<div class="nl-row"><div class="nl-sender">MOBILFOX (3x)</div><div class="nl-freq">3 email in 24h — "WIN TESLA", "WIN 5000 CASH", "WIN LV BAG"</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Marionnaud (2x)</div><div class="nl-freq">2 email in 24h — promo cosmetici</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Blu&cluB (2x)</div><div class="nl-freq">2 email in 24h — offerte vacanze</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Claude Statuspage (5x)</div><div class="nl-freq">5 notifiche incidente — update status</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">Converse</div><div class="nl-freq">Promo scarpe</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Pandora</div><div class="nl-freq">Promo gioielli</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Zara</div><div class="nl-freq">Nuova collezione</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">Coursera</div><div class="nl-freq">Corsi in offerta</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">HiveMQ Team</div><div class="nl-freq">Webinar MQTT/IIoT</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">Vans</div><div class="nl-freq">Promo scarpe</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Dressinn</div><div class="nl-freq">Promo Tommy Jeans</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Foot Locker FLX</div><div class="nl-freq">Promo sneakers</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Nuki Smart Lock</div><div class="nl-freq">Promo smart home</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Instant Gaming</div><div class="nl-freq">Promo giochi</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">Pampling</div><div class="nl-freq">Promo t-shirt</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Voyage Prive</div><div class="nl-freq">Offerte viaggi</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">Credem Banca</div><div class="nl-freq">Info universita</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">EF English Live</div><div class="nl-freq">Promo corsi inglese</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">GLD</div><div class="nl-freq">Promo gioielli</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Disney+</div><div class="nl-freq">Nuovi arrivi</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">LG Italia</div><div class="nl-freq">Promo cashback</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Sky Extra</div><div class="nl-freq">Vantaggi Sky</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">idealista</div><div class="nl-freq">Guide affitti</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">Euronics</div><div class="nl-freq">Promo elettrodomestici</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Expert</div><div class="nl-freq">Promo TV Samsung</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Comet</div><div class="nl-freq">Spedizione gratuita</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Razer</div><div class="nl-freq">Promo gaming</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">WB Games</div><div class="nl-freq">Promo LEGO games 90% off</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">HeyLight</div><div class="nl-freq">Promo vacanze rateizzate</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Shutterstock</div><div class="nl-freq">AI video generator</div><span class="nl-action nl-keep">TIENI</span></div>
+<div class="nl-row"><div class="nl-sender">Venchi</div><div class="nl-freq">Tiramisù collection</div><span class="nl-action nl-unsub">CANCELLATI</span></div>
+<div class="nl-row"><div class="nl-sender">Stasera al Cinema</div><div class="nl-freq">Programmazione Multisala Lux</div><span class="nl-action nl-keep">TIENI</span></div>
+
+<div style="margin-top:16px;padding:14px;background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.15);border-radius:10px;font-size:11px;color:#fbbf24">
+<b>Suggerimento:</b> Hai 17 newsletter da cui potresti cancellarti per ridurre il rumore. Tieni solo quelle utili (tech, viaggi, gaming, finanza).
+</div>
+</div>
+
+<!-- SPAM -->
+<div class="panel" id="tab-spam">
+
+<div style="font-size:13px;font-weight:700;color:#f87171;margin-bottom:12px">🚨 Truffe / Phishing</div>
+
+<div class="spam-card scam">
+<div class="spam-from">⚠️ "Team di Cloud Drive" &lt;edu32_109408@olq7.j7g.mria.crimea.ua&gt;</div>
+<div class="spam-subject">"Ultima chiamata: Il tuo spazio cloud e pieno"</div>
+<div class="spam-reason">TRUFFA: Dominio .crimea.ua — falso avviso storage Google. NON cliccare nessun link.</div>
+</div>
+
+<div class="spam-card scam">
+<div class="spam-from">⚠️ "HotMood" &lt;brandon@webframeworks.ru&gt;</div>
+<div class="spam-subject">"yourdesireeX sent pics"</div>
+<div class="spam-reason">TRUFFA: Dominio .ru — finto sito dating con link malevoli. Phishing per dati personali.</div>
+</div>
+
+<div style="font-size:13px;font-weight:700;color:#94a3b8;margin:16px 0 12px">📧 Spam Normale</div>
+
+<div class="spam-card">
+<div class="spam-from">Trovolavoro &lt;no-reply@service.trovolavoro.com&gt;</div>
+<div class="spam-subject">"Nuove offerte di lavoro per te"</div>
+<div class="spam-reason">Newsletter lavoro non richiesta</div>
+</div>
+
+<div class="spam-card">
+<div class="spam-from">I Gigli Centro Commerciale &lt;newsletter@igigli.it&gt;</div>
+<div class="spam-subject">"Partecipa agli Skifidol Brainrot Days"</div>
+<div class="spam-reason">Newsletter centro commerciale</div>
+</div>
+
+<div class="spam-card">
+<div class="spam-from">Cucina Italiana by Primo Chef</div>
+<div class="spam-subject">"Linguine al limone: perche la primavera sa di limone"</div>
+<div class="spam-reason">Newsletter cucina non richiesta</div>
+</div>
+
+<div class="spam-card">
+<div class="spam-from">Gamelife &lt;noreply@news.gamelife.it&gt;</div>
+<div class="spam-subject">"Scopri Reload: accessori e giochi usati garantiti"</div>
+<div class="spam-reason">Newsletter gaming non richiesta</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.getElementById('tab-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+</script>
+</body>
+</html>
