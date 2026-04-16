@@ -235,6 +235,9 @@ async function bootSequence() {
     // Welcome message
     addSystemMessage('J.A.R.V.I.S. v2.0 — Tutti i sistemi operativi.');
 
+    // Load email digest into sidebar panel
+    loadEmailDigest();
+
     // Iron Man style greeting via dedicated endpoint
     try {
         const resp = await fetch('/api/greeting');
@@ -252,6 +255,63 @@ async function bootSequence() {
         }
     } catch (e) {
         // Server might not be ready yet
+    }
+}
+
+// ── Email Digest Panel ──────────────────────────────────────────────────────
+
+async function loadEmailDigest() {
+    try {
+        const resp = await fetch('/api/emails');
+        if (!resp.ok) return;
+        const data = await resp.json();
+
+        const summaryEl = document.getElementById('email-summary');
+        const listEl = document.getElementById('email-important-list');
+        if (!summaryEl) return;
+
+        // Try daily digest first
+        try {
+            const dResp = await fetch('/api/digest');
+            if (dResp.ok) {
+                const digest = await dResp.json();
+                if (digest.total > 0) {
+                    const scamWarn = digest.scam_count > 0
+                        ? `<span style="color:var(--red)"> · ${digest.scam_count} phishing!</span>` : '';
+                    summaryEl.innerHTML =
+                        `<span style="color:var(--cyan)">${digest.total}</span> email · ` +
+                        `<span style="color:var(--orange)">${digest.promo_count || 0}</span> promo · ` +
+                        `<span style="color:var(--green)">${digest.important?.length || 0}</span> importanti` +
+                        scamWarn;
+
+                    if (digest.important && digest.important.length > 0) {
+                        listEl.innerHTML = digest.important.slice(0, 4).map(e =>
+                            `<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:0.65rem">` +
+                            `<div style="color:var(--cyan);font-weight:600">${e.from}</div>` +
+                            `<div style="color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.subject}</div>` +
+                            `</div>`
+                        ).join('');
+                    }
+                    return;
+                }
+            }
+        } catch (e) {}
+
+        // Fallback to /api/emails
+        if (data.count > 0) {
+            summaryEl.innerHTML = `<span style="color:var(--cyan)">${data.count}</span> email non lette`;
+            listEl.innerHTML = data.emails.slice(0, 4).map(e =>
+                `<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:0.65rem">` +
+                `<div style="color:var(--cyan);font-weight:600">${e.from}</div>` +
+                `<div style="color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.subject}</div>` +
+                `</div>`
+            ).join('');
+        } else {
+            summaryEl.textContent = 'Nessuna email non letta';
+        }
+    } catch (e) {
+        const el = document.getElementById('email-summary');
+        if (el) el.textContent = 'Email non disponibili';
     }
 }
 

@@ -735,6 +735,13 @@ async def serve_dashboard():
 async def serve_email_report():
     return FileResponse(str(BASE_DIR / "static" / "dashboard" / "email-report.html"))
 
+@app.get("/api/digest")
+async def get_digest():
+    digest_path = BASE_DIR / "daily_digest.json"
+    if digest_path.exists():
+        return json.loads(digest_path.read_text())
+    return {"total": 0, "summary_voice": ""}
+
 # ── Auth: WebAuthn + Guest ───────────────────────────────────────────────────
 
 AUTH_FILE = BASE_DIR / "auth_data.json"
