@@ -39,7 +39,7 @@ const A_STOCKS=[
   {s:'JPM',n:'JPMorgan',r:'US'},{s:'V',n:'Visa',r:'US'},{s:'DIS',n:'Disney',r:'US'},
   {s:'ENI.MI',n:'Eni',r:'IT',fh:''},{s:'ENEL.MI',n:'Enel',r:'IT',fh:''},
   {s:'ISP.MI',n:'Intesa Sanpaolo',r:'IT',fh:''},{s:'UCG.MI',n:'UniCredit',r:'IT',fh:''},
-  {s:'STLAM.MI',n:'Stellantis',r:'IT',fh:''},{s:'RACE',n:'Ferrari',r:'IT'},
+  {s:'STLAM.MI',n:'Stellantis',r:'IT',fh:''},{s:'RACE.MI',n:'Ferrari',r:'IT',fh:''},
   {s:'BMW.DE',n:'BMW',r:'DE',fh:''},{s:'VOW3.DE',n:'Volkswagen',r:'DE',fh:''},
   {s:'MBG.DE',n:'Mercedes-Benz',r:'DE',fh:''},{s:'P911.DE',n:'Porsche AG',r:'DE',fh:''},
   {s:'AML.L',n:'Aston Martin',r:'UK',fh:''},{s:'STLA',n:'Stellantis NL',r:'NL'},
@@ -154,9 +154,13 @@ async function yhQuote(s){
 }
 
 async function getQuote(sym,fhSym){
-  if(fhSym!==''&&fhSym&&fhOk){const q=await fhQuote(fhSym);if(q)return q}
+  // Yahoo Finance FIRST — most accurate prices with correct currency
+  const yh=await yhQuote(sym);if(yh)return yh;
+  // FMP as fallback
   const fmp=await fmpQuote(sym);if(fmp)return fmp;
-  return await yhQuote(sym);
+  // Finnhub last resort (US stocks only, no EUR)
+  if(fhSym!==''&&fhSym&&fhOk){const q=await fhQuote(fhSym);if(q)return q}
+  return null;
 }
 
 function getSignal(d){

@@ -349,7 +349,7 @@ const RT_MAP = {
 async function updateRealTimeTicker() {
     for (const [key, cfg] of Object.entries(RT_MAP)) {
         try {
-            const q = await fmpQuote(cfg.sym) || await yhQuote(cfg.sym);
+            const q = await yhQuote(cfg.sym) || await fmpQuote(cfg.sym);
             if (q && q.p > 0) {
                 // Convert to EUR (except EURUSD which IS the rate)
                 const isForex = key === 'eurusd';
